@@ -1,0 +1,31 @@
+
+/* NAvbar ---------- */
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+ul li:not(:last-child) {
+    border-right: 1px solid white; 
+}  
+
+.toggle-container {
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    gap: 1rem;
+}
+
+.toggle-container > *{
+    filter: invert(50%);
+}
+
+.toggle-container > *:hover{
+    filter: invert(80%);
+}
+
+.icon {
+    font-size: 1.8rem;
+}
