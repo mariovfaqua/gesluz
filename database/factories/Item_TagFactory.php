@@ -4,12 +4,12 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Item;
-use App\Models\Order;
+use App\Models\Tag;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order_Item>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Item_tag>
  */
-class Order_ItemFactory extends Factory
+class Item_TagFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,17 +20,15 @@ class Order_ItemFactory extends Factory
     {
         // Recuperar un item y pedido aleatorio o nulo si no existe
         $item = Item::inRandomOrder()->first();
-        $order = Order::inRandomOrder()->first();
-        
+        $tag = Tag::inRandomOrder()->first();
+
         return [
             'item_id' => function () {
                 return \App\Models\Item::inRandomOrder()->first()->id; // Selecciona un ID de item aleatorio
             },
-            'order_id' => function () {
-                return \App\Models\Order::inRandomOrder()->first()->id; // Selecciona un ID de order aleatorio
+            'tag_id' => function () {
+                return \App\Models\Tag::inRandomOrder()->first()->id; // Selecciona un ID de tag aleatorio
             },
-            'cantidad' => $this->faker->numberBetween(1, 100), // Nota: Evita generar cantidades de 0
         ];
-        
     }
 }
