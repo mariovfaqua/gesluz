@@ -17,6 +17,7 @@
     <!-- Estilos adicionales -->
     <!-- <link rel="stylesheet" href="/resources/css/app.css"> -->
     <link rel="stylesheet" href="{{ asset('styles/mainLayout.css') }}">
+    @yield('styles')
 </head>
 <body>
     <!-- Encabezado / Navbar -->
@@ -24,29 +25,129 @@
         <!-- Sidenav -->
         <div id="sidenav" class="offcanvas offcanvas-start bg-light" tabindex="-1" aria-labelledby="sidenavLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title " id="sidenavLabel">Menú</h5>
+                <h5 class="offcanvas-title " id="sidenavLabel">Buscar productos</h5>
                 <div class="toggle-container" data-bs-dismiss="offcanvas" aria-label="Close">
                     <span class="btn-close sidebar-close-icon"></span>
                 </div>
             </div>
-            <div class="offcanvas-body">
-                <ul class="list-unstyled">
-                    <li>
-                        <a href="#" class=" d-flex align-items-center">
-                            <i class="far fa-smile fa-fw me-2"></i> Link 1
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class=" d-flex align-items-center mt-3">
-                            <i class="fas fa-grin fa-fw me-2"></i> Category 1
-                        </a>
-                        <ul class="list-unstyled ps-3">
-                            <li><a href="#" class="">Link 2</a></li>
-                            <li><a href="#" class="">Link 3</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+            <form action="{{ route('items.index') }}" method="GET" class="offcanvas-body">
+                <!-- Barra de búsqueda -->
+                <div class="mb-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Buscar" name="form[query]">
+                        <button type="submit" class="btn btn-outline-secondary" type="button">
+                            <span class="material-symbols-outlined">search</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="filtros">
+                    <!-- Rango de precios -->
+                    <div class="accordion" id="priceAccordion">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapseOne" 
+                                    aria-expanded="false" 
+                                    aria-controls="collapseOne">
+                                    
+                                    Rango de precios
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#priceAccordion">
+                                <div class="accordion-body px-0 py-2">
+                                    <div class="d-flex justify-content-between p-1">
+                                        <input type="number" class="form-control w-45" placeholder="0,00€" name="form[minValue]">
+                                        <input type="number" class="form-control w-45" placeholder="15,00€" name="form[maxValue]">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Material -->
+                    <div class="accordion" id="materialAccordion">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapseTwo" 
+                                    aria-expanded="false" 
+                                    aria-controls="collapseTwo">
+                                    
+                                    Material
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#materialAccordion">
+                                <div class="accordion-body px-1 py-2">
+                                    <select class="form-select" id="form[material]" name="form[material]">
+                                        <option selected>Ninguno</option>
+                                        <option value="1">Opción 1</option>
+                                        <option value="2">Opción 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Marca -->
+                    <div class="accordion" id="brandAccordion">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapseThree" 
+                                    aria-expanded="false" 
+                                    aria-controls="collapseThree">
+                                    
+                                    Marca
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#brandAccordion">
+                                <div class="accordion-body px-1 py-2">
+                                    <select class="form-select" id="form[brand]" name="form[brand]">
+                                        <option selected>Ninguno</option>
+                                        <option value="1">Opción 1</option>
+                                        <option value="2">Opción 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color -->
+                    <div class="accordion" id="colorAccordion">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapseFour" 
+                                    aria-expanded="false" 
+                                    aria-controls="collapseFour">
+                                    
+                                    Color
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#colorAccordion">
+                                <div class="accordion-body px-1 py-2">
+                                    <select class="form-select" id="form[color]" name="form[color]">
+                                        <option selected>Ninguno</option>
+                                        <option value="1">Opción 1</option>
+                                        <option value="2">Opción 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </form>
         </div>
 
         <!-- Navbar -->

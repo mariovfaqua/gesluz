@@ -29,3 +29,15 @@ ul li:not(:last-child) {
 .icon {
     font-size: 1.8rem;
 }
+
+/* Offcanvas ---------- */
+
+.filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filtros > * {
+    border-bottom: 0.1rem solid lightgray;
+}

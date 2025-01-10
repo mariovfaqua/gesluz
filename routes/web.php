@@ -1,7 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MainController;
 
-Route::get('/', function () {
-    return view('index');
-});
+// ----- Inicio
+Route::get('/', [MainController::class, 'index'])->name('inicio');
+
+
+Route::resource('items', 'App\Http\Controllers\ItemController');
+
