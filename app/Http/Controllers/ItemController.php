@@ -64,4 +64,43 @@ class ItemController extends Controller
     {
         //
     }
+
+    public function filter(Request $request){
+        $form = $request->input('form');
+        $items = Item::query();
+
+        // Filtrar por texto
+        if ($filters["query"]) {
+            $items->where('name', 'like', '%' . $query . '%');
+        }
+
+        // Filtrar por precio
+        if ($form['minValue']) {
+            $items->where('precio', '>=', $form['minValue']);
+        }
+
+        if ($form['maxValue']) {
+            $items->where('precio', '<=', $form['maxValue']);
+        }
+
+        // Filtrar por material
+        if ($form['material'] && $form['material'] !== 'Ninguno') {
+            $items->where('material', $form['material']);
+        }
+
+        // Filtrar por marca
+        if ($form['brand'] && $form['brand'] !== 'Ninguno') {
+            $items->where('marca', $form['brand']);
+        }
+
+        // Filtrar por color
+        if ($form['color'] && $form['color'] !== 'Ninguno') {
+            $items->where('color', $form['color']);
+        }
+
+        // Obtener los items filtrados con paginación
+        $items = $items->paginate(40);
+
+        return view('items.list')->with(['items'=>$items]);
+    }
 }

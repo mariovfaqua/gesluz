@@ -30,7 +30,7 @@
                     <span class="btn-close sidebar-close-icon"></span>
                 </div>
             </div>
-            <form action="{{ route('items.index') }}" method="GET" class="offcanvas-body">
+            <form action="{{ route('items.filter') }}" method="GET" class="offcanvas-body">
                 <!-- Barra de búsqueda -->
                 <div class="mb-4">
                     <div class="input-group">
