@@ -27,25 +27,8 @@
                 </div>
             @endforeach
         </div>
-        <!-- <table class="table table-striped">
-            <thead class='bg-secondary text-white'>
-                <tr>
-                    <th>#</th>
-                    <th>Artículo</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($items as $item)
-                    <tr>
-                        <td>{{ $item->id }}</td>
-                        <td>{{ $item->nombre }}</td>
-                        <td>{{ $item->descripcion }}</td>
-                        <td>{{ $item->precio }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table> -->
+        <nav aria-label="Page navigation" class="d-flex justify-content-left gap-3">
+            {{ $items->links('pagination::bootstrap-5') }}
+        </nav>
     </div>
 @endsection
