@@ -13,7 +13,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::paginate(50);
+        $items = Item::paginate(40);
         return view('items.list')->with(['items'=>$items]);
     }
 

@@ -27,8 +27,8 @@
                 </div>
             @endforeach
         </div>
-        <nav aria-label="Page navigation" class="d-flex justify-content-left gap-3">
-            {{ $items->links('pagination::bootstrap-5') }}
+        <nav aria-label="Page navigation">
+            {{ $items->links('pagination.bootstrap-5-custom') }}
         </nav>
     </div>
 @endsection
