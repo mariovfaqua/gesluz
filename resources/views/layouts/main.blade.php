@@ -30,11 +30,11 @@
                     <span class="btn-close sidebar-close-icon"></span>
                 </div>
             </div>
-            <form action="{{ route('items.filter') }}" method="GET" class="offcanvas-body">
+            <form action="{{ route('items.index') }}" method="GET" class="offcanvas-body">
                 <!-- Barra de búsqueda -->
                 <div class="mb-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Buscar" name="form[query]">
+                        <input type="text" class="form-control" placeholder="Nombre del producto" name="form[query]">
                         <button type="submit" class="btn btn-outline-secondary" type="button">
                             <span class="material-symbols-outlined">search</span>
                         </button>
@@ -86,8 +86,9 @@
                                 <div class="accordion-body px-1 py-2">
                                     <select class="form-select" id="form[material]" name="form[material]">
                                         <option selected>Ninguno</option>
-                                        <option value="1">Opción 1</option>
-                                        <option value="2">Opción 2</option>
+                                        @foreach ($materials as $material)
+                                            <option>{{ $material }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -121,7 +122,7 @@
                     </div>
 
                     <!-- Color -->
-                    <div class="accordion" id="colorAccordion">
+                    <!-- <div class="accordion" id="colorAccordion">
                         <div class="accordion-item border-0">
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
@@ -144,7 +145,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     
                 </div>
             </form>

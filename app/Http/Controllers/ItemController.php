@@ -11,10 +11,47 @@ class ItemController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $items = Item::paginate(40);
-        return view('items.list')->with(['items'=>$items]);
+        $form = $request->input('form');
+        $items = Item::query();
+
+        // Filtrar por texto
+        if ($form["query"]) {
+            $items->where('nombre', 'like', '%' . $form["query"] . '%');
+        }
+
+        // Filtrar por precio
+        if ($form['minValue']) {
+            $items->where('precio', '>=', $form['minValue']);
+        }
+
+        if ($form['maxValue']) {
+            $items->where('precio', '<=', $form['maxValue']);
+        }
+
+        // Filtrar por material
+        if ($form['material'] && $form['material'] !== 'Ninguno') {
+            $items->where('material', $form['material']);
+        }
+
+        // Filtrar por marca
+        if ($form['brand'] && $form['brand'] !== 'Ninguno') {
+            $items->where('marca', $form['brand']);
+        }
+
+        // Filtrar por color
+        if ($form['color'] && $form['color'] !== 'Ninguno') {
+            $items->where('color', $form['color']);
+        }
+
+        // Obtener los items filtrados con paginación
+        $items = $items->paginate(40);
+
+        // Recuperar valores estáticos para generar el form
+        $materials = Item::$materials;
+        
+        return view('items.list')->with(['items'=>$items, 'materials' => $materials]);
     }
 
     /**
@@ -63,44 +100,5 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         //
-    }
-
-    public function filter(Request $request){
-        $form = $request->input('form');
-        $items = Item::query();
-
-        // Filtrar por texto
-        if ($filters["query"]) {
-            $items->where('name', 'like', '%' . $query . '%');
-        }
-
-        // Filtrar por precio
-        if ($form['minValue']) {
-            $items->where('precio', '>=', $form['minValue']);
-        }
-
-        if ($form['maxValue']) {
-            $items->where('precio', '<=', $form['maxValue']);
-        }
-
-        // Filtrar por material
-        if ($form['material'] && $form['material'] !== 'Ninguno') {
-            $items->where('material', $form['material']);
-        }
-
-        // Filtrar por marca
-        if ($form['brand'] && $form['brand'] !== 'Ninguno') {
-            $items->where('marca', $form['brand']);
-        }
-
-        // Filtrar por color
-        if ($form['color'] && $form['color'] !== 'Ninguno') {
-            $items->where('color', $form['color']);
-        }
-
-        // Obtener los items filtrados con paginación
-        $items = $items->paginate(40);
-
-        return view('items.list')->with(['items'=>$items]);
     }
 }

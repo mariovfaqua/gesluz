@@ -1,4 +1,11 @@
+
+.title {
+    height: 2.5rem;
+    border-bottom: 0.1rem solid black;
+}
+
 .card_container {
+    padding: 1rem 0;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;

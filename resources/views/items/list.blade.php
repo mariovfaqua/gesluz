@@ -6,6 +6,7 @@
 
 @section('content')
     <div class="container mt-5">
+        <h4 class="title">Resultados de la búsqueda</h4>
         <div class="card_container">
             @foreach ($items as $item)
                 <div class="card card_custom">

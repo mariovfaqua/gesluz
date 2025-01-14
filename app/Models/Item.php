@@ -18,4 +18,11 @@ class Item extends Model
         'marca',
         'stock'
     ];
+
+    public static $materials = [
+        'Plástico',
+        'Metal',
+        'Madera',
+        'Vidrio',
+    ];
 }

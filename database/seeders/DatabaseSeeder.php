@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Order_Item;
 use App\Models\Tag;
 use App\Models\Item_Tag;
+use App\Models\Brand;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
         Order_Item::factory(50)->create();
         Tag::factory(100)->create();
         Item_Tag::factory(50)->create();
+        Brand::factory(50)->create();
 
     }
 }
