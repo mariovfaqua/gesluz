@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id(); // Clave primaria (id)
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Clave foránea a users (user_id)
+            $table->foreignId('id_user')->constrained('users')->onDelete('cascade'); // Clave foránea a users (id_user)
             $table->timestamp('fecha'); // Fecha del pedido
             $table->float('precio_total', 8, 2)->unsigned(); // Precio total del pedido
             $table->boolean('estatus')->default(false); // Estatus del pedido (0 = no entregado, 1 = entregado)

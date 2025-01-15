@@ -23,10 +23,10 @@ class Order_ItemFactory extends Factory
         $order = Order::inRandomOrder()->first();
         
         return [
-            'item_id' => function () {
+            'id_item' => function () {
                 return \App\Models\Item::inRandomOrder()->first()->id; // Selecciona un ID de item aleatorio
             },
-            'order_id' => function () {
+            'id_order' => function () {
                 return \App\Models\Order::inRandomOrder()->first()->id; // Selecciona un ID de order aleatorio
             },
             'cantidad' => $this->faker->numberBetween(1, 100), // Nota: Evita generar cantidades de 0

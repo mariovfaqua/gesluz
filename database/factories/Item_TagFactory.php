@@ -23,10 +23,10 @@ class Item_TagFactory extends Factory
         $tag = Tag::inRandomOrder()->first();
 
         return [
-            'item_id' => function () {
+            'id_item' => function () {
                 return \App\Models\Item::inRandomOrder()->first()->id; // Selecciona un ID de item aleatorio
             },
-            'tag_id' => function () {
+            'id_tag' => function () {
                 return \App\Models\Tag::inRandomOrder()->first()->id; // Selecciona un ID de tag aleatorio
             },
         ];

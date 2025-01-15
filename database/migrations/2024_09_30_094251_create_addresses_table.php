@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id(); // Clave primaria (id)
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Clave foránea a users (user_id)
+            $table->foreignId('id_user')->constrained('users')->onDelete('cascade'); // Clave foránea a users (id_user)
             $table->string('linea_1'); // Dirección línea 1
             $table->string('linea_2')->nullable(); // Dirección línea 2 (opcional)
             $table->string('provincia', 50); // Provincia

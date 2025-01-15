@@ -15,8 +15,8 @@ class Item extends Model
         'precio',
         'material',
         'color',
-        'marca',
-        'stock'
+        'stock',
+        'id_brand',
     ];
 
     public static $materials = [

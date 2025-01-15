@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_items', function (Blueprint $table) {
-            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade'); // Clave foránea a orders (order_id)
-            $table->foreignId('item_id')->constrained('items')->onDelete('cascade'); // Clave foránea a items (item_id)
+            $table->foreignId('id_order')->constrained('orders')->onDelete('cascade'); // Clave foránea a orders (id_order)
+            $table->foreignId('id_item')->constrained('items')->onDelete('cascade'); // Clave foránea a items (id_item)
             $table->integer('cantidad')->unsigned(); // Cantidad de productos en el pedido
-            $table->timestamps(); // Campos created_at y updated_at
+            $table->timestamps();
             
             // Definir clave primaria compuesta
-            $table->primary(['order_id', 'item_id']);
+            $table->primary(['id_order', 'id_item']);
         });
     }
 

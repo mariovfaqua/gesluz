@@ -10,7 +10,7 @@ class Item_Tag extends Model
     use HasFactory;
     protected $table='item_tags';
     protected $fillable= [
-        'item_id',
-        'tag_id',
+        'id_item',
+        'id_tag',
     ];
 }

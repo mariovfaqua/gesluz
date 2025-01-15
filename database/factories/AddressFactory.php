@@ -15,7 +15,7 @@ class AddressFactory extends Factory
         $user = User::inRandomOrder()->first();
 
         return [
-            'user_id' => $user ? $user->id : null, // Comprobar que user_id sea válido o nulo si no hay usuarios
+            'id_user' => $user ? $user->id : null, // Comprobar que id_user sea válido o nulo si no hay usuarios
             'linea_1' => $this->faker->streetAddress(), // Dirección aleatoria
             'linea_2' => $this->faker->secondaryAddress(), // Segunda línea opcional
             'provincia' => $this->faker->state(),
