@@ -17,7 +17,7 @@ class BrandFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => $this->faker->unique()->text(50),
+            'nombre' => $this->faker->unique()->text(20),
         ];
     }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('material', 50); // Material del producto
             $table->string('color', 30); // Color del producto
             $table->integer('stock')->unsigned(); // Stock disponible
-            $table->foreignId('id_brand')->constrained('brands')->onDelete('cascade'); // Marca del producto
+            $table->foreignId('id_brand')->nullable()->constrained('brands')->onDelete('cascade'); // Marca del producto
             $table->timestamps(); // Campos created_at y updated_at
         });
     }

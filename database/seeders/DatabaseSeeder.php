@@ -28,12 +28,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Address::factory(100)->create();
+        Brand::factory(50)->create();
         Item::factory(100)->create();
         Order::factory(100)->create();
         Order_Item::factory(50)->create();
         Tag::factory(100)->create();
         Item_Tag::factory(50)->create();
-        Brand::factory(50)->create();
 
     }
 }
