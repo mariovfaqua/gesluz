@@ -37,21 +37,18 @@ class ItemController extends Controller
 
         // Filtrar por marca
         if ($form['brand'] && $form['brand'] !== 'Ninguno') {
-            $items->where('marca', $form['brand']);
+            $items->where('id_brand', $form['brand']);
         }
 
         // Filtrar por color
-        if ($form['color'] && $form['color'] !== 'Ninguno') {
-            $items->where('color', $form['color']);
-        }
+        // if ($form['color'] && $form['color'] !== 'Ninguno') {
+        //     $items->where('color', $form['color']);
+        // }
 
         // Obtener los items filtrados con paginación
         $items = $items->paginate(40);
-
-        // Recuperar valores estáticos para generar el form
-        $materials = Item::$materials;
         
-        return view('items.list')->with(['items'=>$items, 'materials' => $materials]);
+        return view('items.list')->with(['items'=>$items]);
     }
 
     /**

@@ -1,0 +1,9 @@
+
+.header_image{
+    background-image: url('/images/background_index.jpg');
+    background-size: cover;
+    background-position:center;
+    background-repeat: no-repeat;
+    height: 10rem;
+    width: 100%;
+}

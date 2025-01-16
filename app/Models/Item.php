@@ -18,11 +18,4 @@ class Item extends Model
         'stock',
         'id_brand',
     ];
-
-    public static $materials = [
-        'Plástico',
-        'Metal',
-        'Madera',
-        'Vidrio',
-    ];
 }

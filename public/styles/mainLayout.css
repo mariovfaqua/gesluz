@@ -1,6 +1,16 @@
 
 /* NAvbar ---------- */
 
+.title {
+    color: black;
+    text-decoration: none;
+    font-family: "Lexend Zetta", serif;
+    font-optical-sizing: auto;
+    font-size: 2rem;
+    font-weight: 300;
+    font-style: normal;
+}
+
 .navbar {
     display: flex;
     align-items: center;
@@ -27,6 +37,7 @@ ul li:not(:last-child) {
 }
 
 .icon {
+    font-family: 'Material Symbols Outlined';
     font-size: 1.8rem;
 }
 

@@ -10,9 +10,8 @@
     <!-- CSS de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- CSS de Google Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-
+    <!-- CSS de Google Icons & Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&family=Lexend+Zetta:wght@100..900&display=swap" rel="stylesheet" />
     
     <!-- Estilos adicionales -->
     <!-- <link rel="stylesheet" href="/resources/css/app.css"> -->
@@ -61,7 +60,7 @@
                                 <div class="accordion-body px-0 py-2">
                                     <div class="d-flex justify-content-between p-1">
                                         <input type="number" class="form-control w-45" placeholder="0,00€" name="form[minValue]">
-                                        <input type="number" class="form-control w-45" placeholder="15,00€" name="form[maxValue]">
+                                        <input type="number" class="form-control w-45" placeholder="1500,00€" name="form[maxValue]">
                                     </div>
                                 </div>
                             </div>
@@ -86,9 +85,10 @@
                                 <div class="accordion-body px-1 py-2">
                                     <select class="form-select" id="form[material]" name="form[material]">
                                         <option selected>Ninguno</option>
-                                        @foreach ($materials as $material)
-                                            <option>{{ $material }}</option>
-                                        @endforeach
+                                        <option>Plástico</option>
+                                        <option>Metal</option>
+                                        <option>Madera</option>
+                                        <option>Vidrio</option>
                                     </select>
                                 </div>
                             </div>
@@ -113,8 +113,9 @@
                                 <div class="accordion-body px-1 py-2">
                                     <select class="form-select" id="form[brand]" name="form[brand]">
                                         <option selected>Ninguno</option>
-                                        <option value="1">Opción 1</option>
-                                        <option value="2">Opción 2</option>
+                                        @foreach($brands as $brand)
+                                            <option value="{{ $brand->id }}">{{ $brand->nombre }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -157,7 +158,7 @@
                 <span class="navbar-toggler-icon"></span>
             </div>
             <div>
-                GESLUZ
+                <a class="title" href="{{ route('inicio') }}">GESLUZ</a>
             </div>
             <div class="toggle-container">
                 <span data-bs-toggle="modal" data-bs-target="#loginModal">Login</span>
