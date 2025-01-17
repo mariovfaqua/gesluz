@@ -1,9 +1,59 @@
 
-.header_image{
-    background-image: url('/images/background_index.jpg');
+.header_image {
+    background-image: url('/images/index/background_index.jpg');
     background-size: cover;
-    background-position:center;
+    background-position: 0% 60%;
     background-repeat: no-repeat;
-    height: 10rem;
+    height: 13rem;
     width: 100%;
+}
+
+.card_container {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.card_container > * {
+    width: 16rem;
+    height: 17rem;
+    padding: 1rem;
+
+    color: white;
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2rem;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transition: transform 0.3s ease;
+}
+
+.card_container > *:hover{
+    transform: scale(1.1);
+}
+
+/* Categorías ---------- */
+.dorm {
+    background-image: url('/images/index/dorm.jpg');
+}
+.bano {
+    background-image: url('/images/index/bath.jpg');
+}
+.kit {
+    background-image: url('/images/index/kit.jpg');
+}
+.lv {
+    background-image: url('/images/index/lv.avif');
+}
+.jard {
+    background-image: url('/images/index/jard.jpg');
+}
+.otros {
+    background-image: url('/images/index/otros.webp');
 }

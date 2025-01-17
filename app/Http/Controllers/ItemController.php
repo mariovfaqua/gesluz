@@ -13,37 +13,13 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        $form = $request->input('form');
         $items = Item::query();
 
-        // Filtrar por texto
-        if ($form["query"]) {
-            $items->where('nombre', 'like', '%' . $form["query"] . '%');
+        // Si hay filtros en el formulario, los aplicamos
+        if ($request->has('form')) {
+            $form = $request->input('form');
+            $items = $this->filterByForm($items, $form);
         }
-
-        // Filtrar por precio
-        if ($form['minValue']) {
-            $items->where('precio', '>=', $form['minValue']);
-        }
-
-        if ($form['maxValue']) {
-            $items->where('precio', '<=', $form['maxValue']);
-        }
-
-        // Filtrar por material
-        if ($form['material'] && $form['material'] !== 'Ninguno') {
-            $items->where('material', $form['material']);
-        }
-
-        // Filtrar por marca
-        if ($form['brand'] && $form['brand'] !== 'Ninguno') {
-            $items->where('id_brand', $form['brand']);
-        }
-
-        // Filtrar por color
-        // if ($form['color'] && $form['color'] !== 'Ninguno') {
-        //     $items->where('color', $form['color']);
-        // }
 
         // Obtener los items filtrados con paginación
         $items = $items->paginate(40);
@@ -97,5 +73,40 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         //
+    }
+
+    public function filterByForm($query, $form)
+    {
+        // Filtrar por texto
+        if (!empty($form['query'])) {
+            $query->where('nombre', 'like', '%' . $form['query'] . '%');
+        }
+
+        // Filtrar por precio mínimo
+        if (!empty($form['minValue'])) {
+            $query->where('precio', '>=', $form['minValue']);
+        }
+
+        // Filtrar por precio máximo
+        if (!empty($form['maxValue'])) {
+            $query->where('precio', '<=', $form['maxValue']);
+        }
+
+        // Filtrar por material
+        if (!empty($form['material']) && $form['material'] !== 'Ninguno') {
+            $query->where('material', $form['material']);
+        }
+
+        // Filtrar por marca
+        if (!empty($form['brand']) && $form['brand'] !== 'Ninguno') {
+            $query->where('id_brand', $form['brand']);
+        }
+
+        // Filtrar por color
+        // if ($form['color'] && $form['color'] !== 'Ninguno') {
+        //     $items->where('color', $form['color']);
+        // }
+
+        return $query;
     }
 }

@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('items', function (Blueprint $table) {
-            $table->id(); // Clave primaria (id)
-            $table->string('nombre', 100); // Nombre del producto
-            $table->text('descripcion'); // Descripción del producto
-            $table->float('precio', 7, 2)->unsigned(); // Precio del producto
-            $table->string('material', 50); // Material del producto
-            $table->string('color', 30); // Color del producto
-            $table->integer('stock')->unsigned(); // Stock disponible
-            $table->foreignId('id_brand')->nullable()->constrained('brands')->onDelete('cascade'); // Marca del producto
-            $table->timestamps(); // Campos created_at y updated_at
+            $table->id();
+            $table->string('nombre', 100);
+            $table->text('descripcion');
+            $table->float('precio', 7, 2)->unsigned();
+            $table->enum('distribucion', ['salón', 'dormitorio', 'cocina', 'baño', 'jardín', 'otros']);
+            $table->string('material', 50);
+            $table->string('color', 30);
+            $table->integer('stock')->unsigned();
+            $table->foreignId('id_brand')->nullable()->constrained('brands')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
