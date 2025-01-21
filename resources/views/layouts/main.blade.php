@@ -70,7 +70,7 @@
                     <!-- Material -->
                     <div class="accordion" id="materialAccordion">
                         <div class="accordion-item border-0">
-                            <h2 class="accordion-header" id="headingOne">
+                            <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
                                     type="button" 
                                     data-bs-toggle="collapse" 
@@ -81,7 +81,7 @@
                                     Material
                                 </button>
                             </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#materialAccordion">
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#materialAccordion">
                                 <div class="accordion-body px-1 py-2">
                                     <select class="form-select" id="form[material]" name="form[material]">
                                         <option selected>Ninguno</option>
@@ -98,7 +98,7 @@
                     <!-- Marca -->
                     <div class="accordion" id="brandAccordion">
                         <div class="accordion-item border-0">
-                            <h2 class="accordion-header" id="headingOne">
+                            <h2 class="accordion-header" id="headingThree">
                                 <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
                                     type="button" 
                                     data-bs-toggle="collapse" 
@@ -109,7 +109,7 @@
                                     Marca
                                 </button>
                             </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#brandAccordion">
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#brandAccordion">
                                 <div class="accordion-body px-1 py-2">
                                     <select class="form-select" id="form[brand]" name="form[brand]">
                                         <option selected>Ninguno</option>
@@ -117,6 +117,39 @@
                                             <option value="{{ $brand->id }}">{{ $brand->nombre }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="accordion" id="tagAccordion">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapseThree" 
+                                    aria-expanded="false" 
+                                    aria-controls="collapseThree">
+                                    Tags
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#tagAccordion">
+                                <div class="accordion-body px-1 py-2">
+                                    <!-- Checkbox list -->
+                                    @foreach($tags as $tag)
+                                        <div class="form-check">
+                                            <input class="form-check-input" 
+                                                type="checkbox" 
+                                                id="form[tags][{{ $tag->id }}]" 
+                                                name="form[tags][]" 
+                                                value="{{ $tag->id }}">
+                                            <label class="form-check-label" for="form[tags][{{ $tag->id }}]">
+                                                {{ $tag->nombre }}
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

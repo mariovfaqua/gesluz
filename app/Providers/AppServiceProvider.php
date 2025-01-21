@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Brand;
+use App\Models\Tag;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,7 +24,12 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('layouts.main', function ($view) {
             $brands = Brand::all(); // Recupera todas las marcas
-            $view->with('brands', $brands); // Comparte las marcas con la vista
+            $tags = Tag::all(); // Recupera todos los tags
+            
+            $view->with([
+                'brands' => $brands,
+                'tags' => $tags,
+            ]);    
         });
     }
 }

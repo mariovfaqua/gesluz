@@ -102,6 +102,13 @@ class ItemController extends Controller
             $query->where('id_brand', $form['brand']);
         }
 
+        // Filtrar por tags
+        if (!empty($form['tags']) && is_array($form['tags'])) {
+            $query->whereHas('tags', function ($tagQuery) use ($form) {
+                $tagQuery->whereIn('id', $form['tags']); 
+            });
+        }
+
         // Filtrar por color
         // if ($form['color'] && $form['color'] !== 'Ninguno') {
         //     $items->where('color', $form['color']);

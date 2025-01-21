@@ -19,4 +19,10 @@ class Item extends Model
         'stock',
         'id_brand',
     ];
+
+    /** Relación muchos a muchos con Tag */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'item_tags', 'id_item', 'id_tag');
+    }
 }
