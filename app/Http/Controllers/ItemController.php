@@ -75,6 +75,16 @@ class ItemController extends Controller
         //
     }
 
+    public function quickTag($tag)
+    {
+        // Obtener los items que tienen el tag especificado
+        $items = Item::whereHas('tags', function ($query) use ($tag) {
+            $query->where('nombre', $tag);
+        })->paginate(40);
+
+        return view('items.list', ['items' => $items]);
+    }
+
     public function filterByForm($query, $form)
     {
         // Filtrar por texto

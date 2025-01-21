@@ -7,6 +7,6 @@ use App\Http\Controllers\ItemController;
 // ----- Inicio
 Route::get('/', [MainController::class, 'index'])->name('inicio');
 
-
+Route::get('/items/tag/{tag}', [ItemController::class, 'quickTag'])->name('items.quickTag');
 Route::resource('items', ItemController::class);
 
