@@ -195,7 +195,7 @@
             </div>
             <div class="toggle-container">
                 <span data-bs-toggle="modal" data-bs-target="#loginModal">Login</span>
-                <span class="material-symbols-outlined icon">account_circle</span>
+                <a class="material-symbols-outlined icon" href="{{ route('admin.dashboard') }}">account_circle</a>
                 <span class="material-symbols-outlined icon">shopping_cart</span>
             </div>
         </nav>
