@@ -1,0 +1,36 @@
+.admin-container {
+    min-height: 80vh; /* Altura mínima para centrar en pantalla */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajuste flexible de las columnas */
+    gap: 1.5rem; /* Separación entre tarjetas */
+}
+
+.admin-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 2px solid var(--bs-primary); /* Usa el color primario de Bootstrap */
+    border-radius: 0.5rem;
+    background-color: var(--bs-light); /* Fondo claro por defecto */
+    color: var(--bs-primary); /* Texto del color primario */
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-card:hover {
+    transform: scale(1.1); /* Efecto de agrandamiento */
+    background-color: var(--bs-primary); /* Fondo cambia al color primario */
+    color: var(--bs-light); /* Texto cambia a claro */
+}
+
+a {
+    text-decoration: none; /* Sin subrayado en los enlaces */
+}
