@@ -194,8 +194,31 @@
                 <a class="title" href="{{ route('inicio') }}">GESLUZ</a>
             </div>
             <div class="toggle-container">
-                <span data-bs-toggle="modal" data-bs-target="#loginModal">Login</span>
-                <a class="material-symbols-outlined icon" href="{{ route('admin.dashboard') }}">account_circle</a>
+                <!-- Authentication Links -->
+                @guest
+                    <span data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar sesión</span>
+
+                    <!-- <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a> -->
+                @else
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <span class="material-symbols-outlined icon">account_circle</span>
+                        {{ Auth::user()->name }}
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <a  href="{{ route('home') }}"></a>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                @endguest
+
                 <span class="material-symbols-outlined icon">shopping_cart</span>
             </div>
         </nav>
