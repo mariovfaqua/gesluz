@@ -26,7 +26,7 @@
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title " id="sidenavLabel">Buscar productos</h5>
                 <div class="toggle-container" data-bs-dismiss="offcanvas" aria-label="Close">
-                    <span class="btn-close sidebar-close-icon"></span>
+                    <span class="btn-close sidebar-close-icon toggle-content"></span>
                 </div>
             </div>
             <form action="{{ route('items.index') }}" method="GET" class="offcanvas-body">
@@ -188,7 +188,7 @@
         <!-- Navbar -->
         <nav class="navbar">
             <div class="toggle-container" data-bs-toggle="offcanvas" data-bs-target="#sidenav" aria-controls="sidenav">
-                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon toggle-content"></span>
             </div>
             <div>
                 <a class="title" href="{{ route('inicio') }}">GESLUZ</a>
@@ -196,22 +196,23 @@
             <div class="toggle-container">
                 <!-- Authentication Links -->
                 @guest
-                    <span data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar sesión</span>
-
-                    <!-- <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a> -->
+                    <strong class="toggle-content" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar sesión</strong>
                 @else
-                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                        <span class="material-symbols-outlined icon">account_circle</span>
-                        {{ Auth::user()->name }}
-                    </a>
+                    <div class="dropdown">
+                        <div class=" dropdown-toggle d-flex toggle-content align-items-center" type="button" id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="material-symbols-outlined icon">account_circle</span>
+                            <!-- <strong>{{ Auth::user()->name }}</strong> -->
+                            <strong>Mi cuenta</strong>
+                        </div>
 
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <a  href="{{ route('home') }}"></a>
-                        <a class="dropdown-item" href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ route('home') }}">Home</a></li>
+                            <li><a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
                                             document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                        </a>
+                                Cerrar sesión
+                            </a></li>
+                        </ul>
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -219,24 +220,61 @@
                     </div>
                 @endguest
 
-                <span class="material-symbols-outlined icon">shopping_cart</span>
+                <span class="material-symbols-outlined icon toggle-content">shopping_cart</span>
             </div>
         </nav>
 
         <!-- Modal -->
         <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalLabel">iniciar sesión</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="loginModalLabel">Iniciar sesión</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
-                        ...
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary">Guardar</button>
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+
+                            <!-- Correo Electrónico -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Correo electrónico</label>
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <!-- Contraseña -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <!-- Recuérdame -->
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                                <label class="form-check-label" for="remember">Recuérdame</label>
+                            </div>
+
+                            <!-- Confirmar petición -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Confirmar</button>
+                            </div>
+                        </form>
+
+                        <!-- Enlace para Registrarse -->
+                        <div class="d-flex flex-column text-center gap-3">
+                            <a class="btn btn-link text-center" href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+                            <a href="{{ route('register') }}">¿No tienes cuenta? Haz click aquí</a>
+                        </div>
                     </div>
                 </div>
             </div>

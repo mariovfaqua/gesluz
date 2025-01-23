@@ -28,11 +28,11 @@ ul li:not(:last-child) {
     gap: 1rem;
 }
 
-.toggle-container > *{
+.toggle-content{
     filter: invert(50%);
 }
 
-.toggle-container > *:hover{
+.toggle-content:hover{
     filter: invert(80%);
 }
 
