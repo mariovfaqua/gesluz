@@ -8,6 +8,26 @@
     width: 100%;
 }
 
+.consignas {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+}
+
+.consignas > div {
+    width: 12rem;
+}
+
+.consignas_icon {
+    padding: 0.3rem;
+    font-size: 4rem;
+    border: 0.4rem solid white;
+    border-radius: 100%;
+}
+
+/* Tarjetas ---------- */
 .card_container {
     padding: 1rem 0;
     display: flex;
