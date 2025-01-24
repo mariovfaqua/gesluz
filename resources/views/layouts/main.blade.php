@@ -312,7 +312,12 @@
     </main>
 
     <!-- Pie de página -->
-    <footer class="bg-dark text-center py-3">
+    <footer class="bg-dark text-center mt-3 py-3">
+        <strong>Contacta con nosotros</strong>
+        <ul class="contact_list">
+            <li>Teléfono: 123 45 67 98</li>
+            <li>Ubicación: C/ Ejemplo 12 24010 LEÓN </li>
+        </ul>
         <!-- <p>&copy; {{ date('Y') }} Gesluz </p> -->
     </footer>
 

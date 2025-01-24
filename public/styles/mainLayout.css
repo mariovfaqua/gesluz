@@ -52,3 +52,17 @@ ul li:not(:last-child) {
 .filtros > * {
     border-bottom: 0.1rem solid lightgray;
 }
+
+/* Footer ---------- */
+
+.contact_list {
+    margin-top: 1rem;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+}
+
+.contact_list li{
+    padding: 0 0.5rem;
+    font-size: 0.7rem;
+}
