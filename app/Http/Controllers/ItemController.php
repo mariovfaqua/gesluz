@@ -32,7 +32,12 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        if (auth()->user()->role !== 'admin') {
+            // Si el usuario no es admin, redirigir con un mensaje de error
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
+        return view('items.create');
     }
 
     /**
