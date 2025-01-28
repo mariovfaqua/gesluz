@@ -27,8 +27,8 @@
 
                         <!-- Precio -->
                         <div class="mb-3">
-                            <label for="precio" class="form-label">Precio</label>
-                            <input type="number" step="0.01" class="form-control" id="precio" name="precio" placeholder="Precio del item" required>
+                            <label for="precio" class="form-label">Precio (euros)</label>
+                            <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="0.00" required>
                         </div>
 
                         <!-- Distribución -->
@@ -41,7 +41,6 @@
                                 <option value="cocina">Cocina</option>
                                 <option value="baño">Baño</option>
                                 <option value="jardín">Jardín</option>
-                                <option value="otros">Otros</option>
                             </select>
                         </div>
 
@@ -77,7 +76,7 @@
                         <!-- Tags -->
                         <div class="mb-3">
                             <label class="form-label">Tags</label>
-                            <div class="row">
+                            <div id="tags-container" class="row">
                                 @foreach($tags as $tag)
                                     <div class="col-12 col-md-4 mb-2">
                                         <div class="form-check">
@@ -87,14 +86,24 @@
                                     </div>
                                 @endforeach
                             </div>
+
+                            <!-- Botón para añadir nuevo tag -->
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-primary px-3 text-nowrap" id="add-tag-button">Añadir tag</button>
+                                <input type="text" id="new-tag" class="form-control d-none w-100" placeholder="Escriba aquí el nuevo tag">
+                            </div>
                         </div>
 
                         <!-- Botón de envío -->
                         <button type="submit" class="btn btn-primary w-100">Crear Item</button>
-                        
                     </form>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="{{ asset('scripts/newTag.js') }}"></script>
+@endpush
+
