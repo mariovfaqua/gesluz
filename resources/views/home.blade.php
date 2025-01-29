@@ -24,6 +24,13 @@
                 </div>
             @endif
 
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+
             <!-- Comprobación del rol -->
             @if (Auth::user()->role === 'admin')
                 <div class="admin-grid mt-4">

@@ -45,7 +45,48 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validación de los datos del formulario
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'precio' => 'required|numeric|min:0',
+            'distribucion' => 'required|string',
+            'material' => 'required|string',
+            'stock' => 'required|integer|min:0',
+            'id_brand' => 'nullable|exists:brands,id',
+            'tags' => 'array', // Tags existentes
+            'tags.*' => 'exists:tags,id', // Asegurar que sean tags válidos
+            'newTags' => 'array', // Nuevos tags (si los hay)
+            'newTags.*' => 'string|max:255', // Cada nuevo tag debe ser una cadena de texto válida
+        ]);
+
+        // Crear el nuevo item
+        $item = Item::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'precio' => $request->precio,
+            'distribucion' => $request->distribucion,
+            'material' => $request->material,
+            'stock' => $request->stock,
+            'id_brand' => $request->id_brand,
+        ]);
+
+        // Obtener los IDs de los tags existentes seleccionados
+        $tagIds = $request->tags ?? [];
+
+        // Procesar los nuevos tags si los hay
+        if ($request->has('newTags')) {
+            foreach ($request->newTags as $tagName) {
+                $tag = Tag::firstOrCreate(['nombre' => $tagName]);
+                $tagIds[] = $tag->id; // Agregar el nuevo tag a la lista de IDs
+            }
+        }
+
+        // Sincronizar los tags con la tabla intermedia item_tags
+        $item->tags()->sync($tagIds);
+
+        // Redireccionar con mensaje de éxito
+        return redirect()->route('home')->with('success', 'Item creado exitosamente.');
     }
 
     /**

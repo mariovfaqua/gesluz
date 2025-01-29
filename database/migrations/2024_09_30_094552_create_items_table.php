@@ -18,7 +18,7 @@ return new class extends Migration
             $table->float('precio', 7, 2)->unsigned();
             $table->enum('distribucion', ['salón', 'dormitorio', 'cocina', 'baño', 'jardín', 'otros']);
             $table->string('material', 50);
-            $table->string('color', 30);
+            // $table->string('color', 30)->nullable();;
             $table->integer('stock')->unsigned();
             $table->foreignId('id_brand')->nullable()->constrained('brands')->onDelete('cascade');
             $table->timestamps();

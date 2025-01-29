@@ -15,7 +15,7 @@ class Item extends Model
         'precio',
         'distribucion',
         'material',
-        'color',
+        // 'color',
         'stock',
         'id_brand',
     ];
