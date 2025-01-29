@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -57,7 +58,7 @@ class ItemController extends Controller
             'tags' => 'array', // Tags existentes
             'tags.*' => 'exists:tags,id', // Asegurar que sean tags válidos
             'newTags' => 'array', // Nuevos tags (si los hay)
-            'newTags.*' => 'string|max:255', // Cada nuevo tag debe ser una cadena de texto válida
+            'newTags.*' => 'string|max:255',
         ]);
 
         // Crear el nuevo item

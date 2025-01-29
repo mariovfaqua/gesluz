@@ -59,7 +59,7 @@
                         <!-- Stock -->
                         <div class="mb-3">
                             <label for="stock" class="form-label">Stock</label>
-                            <input type="number" class="form-control" id="stock" name="stock" placeholder="Cantidad en stock" min=0 required>
+                            <input type="number" class="form-control" id="stock" name="stock" value="0" min=0 required>
                         </div>
 
                         <!-- Marca -->
@@ -91,6 +91,7 @@
                             <div class="d-flex align-items-center gap-2">
                                 <button type="button" class="btn btn-primary px-3 text-nowrap" id="add-tag-button">Añadir tag</button>
                                 <input type="text" id="new-tag" class="form-control d-none w-100" placeholder="Escriba aquí el nuevo tag">
+                                <div id="tag-error" class="text-danger mt-2 d-none"></div>
                             </div>
                         </div>
 
