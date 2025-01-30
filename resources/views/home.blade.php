@@ -42,7 +42,7 @@
                     </a>
 
                     <!-- Editar/Eliminar Item -->
-                    <a href="{{ route('items.index') }}">
+                    <a href="{{ route('items.adminList') }}">
                         <div class="admin-card p-3 border rounded">
                             Editar/Eliminar Item
                         </div>

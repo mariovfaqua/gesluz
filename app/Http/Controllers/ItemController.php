@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ItemController extends Controller
 {
@@ -103,7 +104,13 @@ class ItemController extends Controller
      */
     public function edit(Item $item)
     {
-        //
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+    
+        $selectedTags = $item->tags->pluck('id')->toArray();
+    
+        return view('items.edit')->with(['selectedTags'=>$selectedTags]);
     }
 
     /**
@@ -130,6 +137,16 @@ class ItemController extends Controller
         })->paginate(40);
 
         return view('items.list', ['items' => $items]);
+    }
+
+    public function getAdminList(){
+        if (auth()->user()->role !== 'admin') {
+            // Si el usuario no es admin, redirigir con un mensaje de error
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
+        $items = Item::all();
+        return view('items.adminList')->with(['items'=>$items]);
     }
 
     public function filterByForm($query, $form)

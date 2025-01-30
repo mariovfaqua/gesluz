@@ -41,5 +41,15 @@ class AppServiceProvider extends ServiceProvider
                 'tags' => $tags,
             ]);    
         });
+
+        View::composer('items.edit', function ($view) {
+            $brands = Brand::all(); // Recupera todas las marcas
+            $tags = Tag::all(); // Recupera todos los tags
+            
+            $view->with([
+                'brands' => $brands,
+                'tags' => $tags,
+            ]);    
+        });
     }
 }
