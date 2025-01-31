@@ -6,6 +6,12 @@
 
 @section('content')
     <div class="container mt-5">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        
         <h4 class="search_title">Listado de items</h4>
         
         <!-- Barra de búsqueda -->
@@ -49,7 +55,7 @@
             </table>
         </div>
     </div>
-    
+
 @endsection
 
 @push('scripts')

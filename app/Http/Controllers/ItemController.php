@@ -73,18 +73,8 @@ class ItemController extends Controller
             'id_brand' => $request->id_brand,
         ]);
 
-        // Obtener los IDs de los tags existentes seleccionados
-        $tagIds = $request->tags ?? [];
-
-        // Procesar los nuevos tags si los hay
-        if ($request->has('newTags')) {
-            foreach ($request->newTags as $tagName) {
-                $tag = Tag::firstOrCreate(['nombre' => $tagName]);
-                $tagIds[] = $tag->id; // Agregar el nuevo tag a la lista de IDs
-            }
-        }
-
-        // Sincronizar los tags con la tabla intermedia item_tags
+        // Procesar y sincronizar los tags
+        $tagIds = $this->processTags($request);
         $item->tags()->sync($tagIds);
 
         // Redireccionar con mensaje de éxito
@@ -110,7 +100,7 @@ class ItemController extends Controller
     
         $selectedTags = $item->tags->pluck('id')->toArray();
     
-        return view('items.edit')->with(['selectedTags'=>$selectedTags]);
+        return view('items.edit')->with(['item'=>$item, 'selectedTags'=>$selectedTags]);
     }
 
     /**
@@ -118,7 +108,41 @@ class ItemController extends Controller
      */
     public function update(Request $request, Item $item)
     {
-        //
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para realizar esta acción.');
+        }
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'precio' => 'required|numeric|min:0',
+            'distribucion' => 'required|string',
+            'material' => 'required|string',
+            'stock' => 'required|integer|min:0',
+            'id_brand' => 'nullable|exists:brands,id',
+            'tags' => 'array',
+            'tags.*' => 'exists:tags,id',
+            'newTags' => 'array', // Nuevos tags (si los hay)
+            'newTags.*' => 'string|max:255',
+        ]);
+
+        // Actualizar los datos del item
+        $item->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'precio' => $request->precio,
+            'distribucion' => $request->distribucion,
+            'material' => $request->material,
+            'stock' => $request->stock,
+            'id_brand' => $request->id_brand,
+        ]);
+
+        // Procesar y sincronizar los tags
+        $tagIds = $this->processTags($request);
+        $item->tags()->sync($tagIds);
+
+        // Redireccionar con mensaje de éxito
+        return redirect()->route('items.adminList')->with('success', 'Item actualizado correctamente.');
     }
 
     /**
@@ -189,5 +213,21 @@ class ItemController extends Controller
         // }
 
         return $query;
+    }
+
+    public function processTags($request)
+    {
+        // Obtener los IDs de los tags existentes seleccionados
+        $tagIds = $request->tags ?? [];
+
+        // Procesar los nuevos tags si los hay
+        if ($request->has('newTags')) {
+            foreach ($request->newTags as $tagName) {
+                $tag = Tag::firstOrCreate(['nombre' => $tagName]);
+                $tagIds[] = $tag->id; // Agregar el nuevo tag a la lista de IDs
+            }
+        }
+
+        return $tagIds;
     }
 }
