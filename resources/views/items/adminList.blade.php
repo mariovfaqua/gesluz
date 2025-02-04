@@ -11,7 +11,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        
+
         <h4 class="search_title">Listado de items</h4>
         
         <!-- Barra de búsqueda -->
@@ -44,8 +44,8 @@
                             <td>
                                 <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning btn-sm">Editar</a>
                                 <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-inline">
-                                    @csrf
                                     @method('DELETE')
+                                    @csrf
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este ítem?')">Eliminar</button>
                                 </form>
                             </td>

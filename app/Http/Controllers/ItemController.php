@@ -150,7 +150,26 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        //
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para realizar esta acción.');
+        }
+    
+        try {
+            // Eliminar las relaciones con tags antes de borrar el item
+            $item->tags()->detach();
+    
+            // Eliminar la imagen asociada si existe
+            // if ($item->imagen && Storage::exists($item->imagen)) {
+            //     Storage::delete($item->imagen);
+            // }
+    
+            // Eliminar el item
+            $item->delete();
+    
+            return redirect()->route('items.adminList')->with('success', 'Item eliminado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('items.adminList')->with('error', 'Hubo un problema al eliminar el item.');
+        }
     }
 
     public function quickTag($tag)
