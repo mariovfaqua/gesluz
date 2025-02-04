@@ -129,13 +129,13 @@
                                 <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
                                     type="button" 
                                     data-bs-toggle="collapse" 
-                                    data-bs-target="#collapseThree" 
+                                    data-bs-target="#collapseFour" 
                                     aria-expanded="false" 
-                                    aria-controls="collapseThree">
+                                    aria-controls="collapseFour">
                                     Tags
                                 </button>
                             </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#tagAccordion">
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#tagAccordion">
                                 <div class="accordion-body px-1 py-2">
                                     <!-- Checkbox list -->
                                     @foreach($tags as $tag)
@@ -283,10 +283,10 @@
         <!-- Enlaces de acceso rápido -->
         <ul class="nav justify-content-center bg-dark">
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Interior</a>
+                <a class="nav-link text-white" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'interior']) }}">Interior</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Exterior</a>
+                <a class="nav-link text-white" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'exterior']) }}">Exterior</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white" href="#">Tipos</a>
@@ -295,11 +295,23 @@
                 <a class="nav-link text-white" href="#">Estilos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Distribución</a>
+                <div class="dropdown">
+                    <a class="nav-link text-white" href="#" id="distributionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Distribución
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="distributionDropdown">
+                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'dormitorio']) }}">Dormitorio</a></li>
+                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Baño']) }}">Baño</a></li>
+                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Jardín']) }}">Jardín</a></li>
+                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Cocina']) }}">Cocina</a></li>
+                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Salón']) }}">Salón</a></li>
+                    </ul>
+                </div>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link text-white" href="#">Marcas</a>
-            </li>
+            </li> -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="#">Ofertas</a>
             </li>

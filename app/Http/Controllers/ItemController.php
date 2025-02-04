@@ -172,12 +172,26 @@ class ItemController extends Controller
         }
     }
 
-    public function quickTag($tag)
+    public function quickLink($type, $value)
     {
-        // Obtener los items que tienen el tag especificado
-        $items = Item::whereHas('tags', function ($query) use ($tag) {
-            $query->where('nombre', $tag);
-        })->paginate(40);
+        switch ($type) {
+            case 'distribucion':
+                if($value == 'interior'){
+                    $items = Item::whereIn('distribucion', ['Dormitorio', 'Cocina', 'Baño', 'Salón'])->paginate(40);
+                } elseif ($value == 'exterior'){
+                    $items = Item::whereIn('distribucion', ['Jardín'])->paginate(40);
+                } else {
+                    $items = Item::where('distribucion', $value)->paginate(40);
+                }
+                break;
+            case 'marca':
+                $items = Item::whereHas('brand', function ($query) use ($value) {
+                    $query->where('nombre', $value);
+                })->paginate(40);
+                break;
+            default:
+                return redirect()->route('items.index');
+        }
 
         return view('items.list', ['items' => $items]);
     }

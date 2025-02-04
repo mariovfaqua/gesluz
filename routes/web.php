@@ -14,7 +14,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
  ->name('home'); 
 
 // ----- Items
-Route::get('/items/tag/{tag}', [ItemController::class, 'quickTag'])->name('items.quickTag');
+Route::get('/items/link/{type}/{value}', [ItemController::class, 'quickLink'])->name('items.quickLink');
 Route::get('/items/adminList', [ItemController::class, 'getAdminList'])->name('items.adminList');
 Route::resource('items', ItemController::class);
 
