@@ -9,10 +9,11 @@
         <h4 class="search_title">Resultados de la búsqueda</h4>
         <div class="card_container">
             @foreach ($items as $item)
-                <div class="card card_custom">
+                <a href="{{ route('items.show', $item->id) }}" class="text-decoration-none card card_custom">
                     <img src="..." 
                     class="card-img-top" 
-                    onerror="this.onerror=null; this.src='{{ asset('images/no_image.jpg') }}';">
+                    onerror="this.onerror=null; this.src='{{ asset('images/no_image.jpg') }}';"
+                    >
 
                     <div class="card-body">
                         <h5 class="card-title">{{ $item->precio }}€</h5>
@@ -25,7 +26,7 @@
                             <span>{{ $item->stock > 0 ? 'En stock' : 'Agotado' }}</span>
                         </p>
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
         <nav aria-label="Page navigation">

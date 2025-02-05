@@ -12,4 +12,10 @@ class Image extends Model
     protected $fillable = [
         'url',
     ];
+
+    // Relación muchos a uno con el item
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'id_item');
+    }
 }

@@ -25,4 +25,10 @@ class Item extends Model
     {
         return $this->belongsToMany(Tag::class, 'item_tags', 'id_item', 'id_tag');
     }
+
+    // Relación uno a muchos con las imágenes
+    public function images()
+    {
+        return $this->hasMany(Image::class, 'id_item');
+    }
 }
