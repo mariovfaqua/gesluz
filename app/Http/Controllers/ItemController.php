@@ -187,10 +187,13 @@ class ItemController extends Controller
                     $items = Item::where('distribucion', $value)->paginate(40);
                 }
                 break;
-            case 'marca':
-                $items = Item::whereHas('brand', function ($query) use ($value) {
-                    $query->where('nombre', $value);
-                })->paginate(40);
+            case 'tag':
+                // Buscar el tag por nombre y obtener los items relacionados
+                $tag = Tag::where('nombre', $value)->first();
+
+                if ($tag) {
+                    $items = $tag->items()->paginate(40);
+                }
                 break;
             default:
                 return redirect()->route('items.index');

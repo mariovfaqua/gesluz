@@ -44,7 +44,10 @@
                 <!-- Tags -->
                 <div class="mt-3">
                     @foreach($item->tags as $tag)
-                        <span class="badge bg-dark text-white">{{ $tag->nombre }}</span>
+                        <a href="{{ route('items.quickLink', ['type' => 'tag', 'value' => $tag->nombre]) }}" 
+                        class="badge bg-dark text-white text-decoration-none">
+                            {{ $tag->nombre }}
+                        </a>
                     @endforeach
                 </div>
             </div>
