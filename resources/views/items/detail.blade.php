@@ -53,25 +53,35 @@
             </div>
 
             <!-- Información del producto -->
-            <div class="col-md-6">
-                <h2 class="fw-bold">{{ $item->nombre }}</h2>
+            <div class="col-md-6 d-flex flex-column pt-4 pb-5">
+                <h3 class="fw-bold">{{ $item->nombre }}</h3>
                 <hr>
 
-                <!-- Precio -->
-                <h4 class="fw-bold text-dark">{{ number_format($item->precio, 2) }}€</h4>
+                <div class="d-flex align-items-center gap-4">
+                    <!-- Precio -->
+                    <h4 class="fw-bold text-dark">{{ number_format($item->precio, 2) }}€</h4>
 
-                <!-- Cantidad -->
-                <div class="my-3">
-                    <label for="cantidad" class="fw-bold">Cantidad</label>
-                    <input type="number" id="cantidad" name="cantidad" value="1" min="1" class="form-control w-25">
+                    <!-- Cantidad -->
+                    <div class="d-flex gap-2 badge bg-dark text-white align-items-center">
+                        <label for="cantidad" class="fw-bold">Cantidad: </label>
+                        <input type="number" 
+                            id="cantidad" 
+                            name="cantidad" 
+                            value="1" 
+                            min="1" 
+                            max="{{ $item->stock }}"  
+                            class="form-control text-center"
+                        >
+                        <div id="error" class="text-danger mt-2"></div>
+                    </div>
                 </div>
 
                 <!-- Botón de agregar al carrito -->
-                <button class="btn btn-dark w-100">Añadir al carrito</button>
+                <button class="mt-3 btn btn-dark w-100">Añadir al carrito</button>
 
                 <!-- Descripción -->
-                <div class="mt-4">
-                    <h5 class="fw-bold">DESCRIPCIÓN</h5>
+                <div class="mt-auto">
+                    <strong>DESCRIPCIÓN</strong>
                     <p>{{ $item->descripcion }}</p>
                 </div>
             </div>
