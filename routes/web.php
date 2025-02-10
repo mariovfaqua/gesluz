@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 
 Auth::routes(); 
@@ -18,6 +19,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
 Route::get('/items/link/{type}/{value}', [ItemController::class, 'quickLink'])->name('items.quickLink');
 Route::get('/items/adminList', [ItemController::class, 'getAdminList'])->name('items.adminList');
 Route::resource('items', ItemController::class);
+
+// ----- Orders
+Route::resource('orders', OrderController::class);
 
 // ----- Carrito
 Route::get('/cart', [CartController::class, 'index'])->name('cart');

@@ -4,14 +4,14 @@
 <div class="container mt-5">
     <div class="row">
         <!-- Sección izquierda: Tabla de productos -->
-        <div class="col-md-8">
-            <h2>Mi carrito de compras</h2>
+        <div class="col-md-7">
+            <h4>Mi carrito de compra</h4>
 
             @if(count($items) > 0)
                 <table class="table align-middle">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th>Imagen</th>
                             <th>Producto</th>
                             <th>Precio</th>
                             <th>Cantidad</th>
@@ -28,7 +28,7 @@
                                          class="img-thumbnail"
                                          width="70">
                                 </td>
-                                <td>{{ $item->nombre }}</td>
+                                <td><a href="{{ route('items.show', $item->id) }}">{{ $item->nombre }}</a></td>
                                 <td>{{ number_format($item->precio, 2) }} €</td>
                                 <td>{{ $item->cantidad }}</td>
                                 <td>{{ number_format($item->cantidad * $item->precio, 2) }} €</td>
@@ -51,26 +51,27 @@
         </div>
 
         <!-- Sección derecha: Resumen del pedido -->
-        <div class="col-md-4">
-            <div class="p-4 bg-light rounded shadow">
+        <div class="col-md-5">
+            <form action="#" method="POST" class="p-4 bg-light rounded shadow">
                 <h4 class="mb-4"><strong>Resumen del pedido</strong></h4>
                 <div class="d-flex justify-content-between">
-                    <span>Productos (IVA inc.)</span>
+                    <span>Productos:</span>
                     <span>{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }} €</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span>Gastos de envío (IVA inc.)</span>
-                    <span>xxxx€</span> <!-- Puedes hacer lógica para calcularlo -->
+                    <span>Desconocido</span>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between fw-bold">
-                    <span>Total (IVA inc.)</span>
-                    <span>xxxx€</span> <!-- Aquí sumas el total más los gastos de envío -->
+                    <span>Total:</span>
+                    <span>{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }} €</span>
+                    <input id="precio_total" name="precio_total" type="hidden" value="{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }}">
                 </div>
-                <button class="btn btn-warning w-100 mt-3 p-2 fw-bold">
+                <button type="submit" class="btn btn-warning w-100 mt-3 p-2 fw-bold">
                     Finalizar pedido
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
