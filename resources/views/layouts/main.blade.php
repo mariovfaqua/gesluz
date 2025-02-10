@@ -220,7 +220,7 @@
                     </div>
                 @endguest
 
-                <span class="material-symbols-outlined icon toggle-content">shopping_cart</span>
+                <a href="{{ route('cart') }}" class="material-symbols-outlined icon toggle-content text-decoration-none">shopping_cart</a>
             </div>
         </nav>
 

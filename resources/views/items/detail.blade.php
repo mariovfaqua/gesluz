@@ -57,27 +57,32 @@
                 <h3 class="fw-bold">{{ $item->nombre }}</h3>
                 <hr>
 
-                <div class="d-flex align-items-center gap-4">
-                    <!-- Precio -->
-                    <h4 class="fw-bold text-dark">{{ number_format($item->precio, 2) }}€</h4>
+                <form action="{{ route('cart.add') }}" method="POST">
+                @csrf
+                    <div class="d-flex align-items-center gap-4">
+                        <!-- Precio -->
+                        <h4 class="fw-bold text-dark">{{ number_format($item->precio, 2) }}€</h4>
 
-                    <!-- Cantidad -->
-                    <div class="d-flex gap-2 badge bg-dark text-white align-items-center">
-                        <label for="cantidad" class="fw-bold">Cantidad: </label>
-                        <input type="number" 
-                            id="cantidad" 
-                            name="cantidad" 
-                            value="1" 
-                            min="1" 
-                            max="{{ $item->stock }}"  
-                            class="form-control text-center"
-                        >
-                        <div id="error" class="text-danger mt-2"></div>
+                        <!-- Cantidad -->
+                        <div class="d-flex gap-2 badge bg-dark text-white align-items-center">
+                            <label for="cantidad" class="fw-bold">Cantidad: </label>
+                            <input type="number" 
+                                id="cantidad" 
+                                name="cantidad" 
+                                value="1" 
+                                min="1" 
+                                max="{{ $item->stock }}"  
+                                class="form-control text-center"
+                            >
+                            <div id="error" class="text-danger mt-2"></div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Botón de agregar al carrito -->
-                <button class="mt-3 btn btn-dark w-100">Añadir al carrito</button>
+                    <!-- Agregar al carrito -->
+                    <input type="hidden" name="id_item" value="{{ $item->id }}">
+                    <button type="submit" class="mt-3 btn btn-dark w-100">Agregar al carrito</button>
+                </form>
+
 
                 <!-- Descripción -->
                 <div class="mt-auto">
