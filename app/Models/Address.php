@@ -10,7 +10,7 @@ class Address extends Model
     use HasFactory;
     protected $table = 'addresses';
     protected $fillable = [
-        'id_user',
+        'nombre',
         'linea_1',
         'linea_2',
         'provincia',
@@ -18,5 +18,6 @@ class Address extends Model
         'pais',
         'codigo_postal',
         'primaria',
+        'id_user',
     ];
 }

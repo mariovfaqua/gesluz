@@ -77,4 +77,24 @@ class CartController extends Controller
         session()->forget('cart');
         return back()->with('success', 'Carrito vacío');
     }
+
+    // Guardar la dirección
+    public function storeAddress(Request $request)
+    {
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
+            'nombre'        => 'required|string|max:255',
+            'linea_1'       => 'required|string|max:255',
+            'linea_2'       => 'nullable|string|max:255',
+            'pais'          => 'required|string|max:100',
+            'provincia'     => 'required|string|max:100',
+            'ciudad'        => 'required|string|max:100',
+            'codigo_postal' => 'required|string|max:20',
+        ]);
+
+        // Guardar en la sesión
+        session(['address' => $validatedData]);
+
+        return redirect()->back();
+    }
 }

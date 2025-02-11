@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use App\Models\Address;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
@@ -17,14 +18,16 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
-        // Recuperar un usuario aleatorio o nulo si no existe
+        // Recuperar un usuario y dirección aleatorios o nulos si no existen
         $user = User::inRandomOrder()->first();
+        $address = Address::inRandomOrder()->first();
 
         return [
-            'id_user' => $user ? $user->id : null, // Comprobar que id_user sea válido o nulo si no hay usuarios
             'fecha' => $this->faker->dateTimeBetween('-1 year', 'now'), // Fecha aleatoria entre hace un año y ahora
             'precio_total' => $this->faker->randomFloat(2, 10, 900), // Precio entre 10.00 y 900.00
             'estatus' => $this->faker->boolean(), // Boolean para determinar si el pedido ha sido entregado (1) o no (0)
+            'id_user' => $user ? $user->id : null, // Comprobar que id_user sea válido o nulo si no hay usuarios
+            'id_address' => $user ? $user->id : null, // Comprobar que id_user sea válido o nulo si no hay direcciones
         ];
     }
 }

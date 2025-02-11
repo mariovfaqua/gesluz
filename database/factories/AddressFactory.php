@@ -15,7 +15,7 @@ class AddressFactory extends Factory
         $user = User::inRandomOrder()->first();
 
         return [
-            'id_user' => $user ? $user->id : null, // Comprobar que id_user sea válido o nulo si no hay usuarios
+            'nombre' => fake()->name(),
             'linea_1' => $this->faker->streetAddress(), // Dirección aleatoria
             'linea_2' => $this->faker->secondaryAddress(), // Segunda línea opcional
             'provincia' => $this->faker->state(),
@@ -23,6 +23,7 @@ class AddressFactory extends Factory
             'pais' => $this->faker->country(),
             'codigo_postal' => $this->faker->postcode(),
             'primaria' => $this->faker->boolean(), // Dirección primaria (true/false)
+            'id_user' => $user ? $user->id : null, // Comprobar que id_user sea válido o nulo si no hay usuarios
         ];
     }
 }
