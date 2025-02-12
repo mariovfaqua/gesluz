@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
+use App\Models\Address;
 
 class CartController extends Controller
 {
@@ -22,6 +24,15 @@ class CartController extends Controller
         // Agregar la cantidad
         foreach ($items as $item) {
             $item->cantidad = $cart[$item->id]['cantidad'] ?? 1;
+        }
+
+        // Intentar guardar en la sesión la dirección primaria
+        if (!session()->has('address') && Auth::check()) {
+            $address = Address::where('id_user', Auth::id())->where('primaria', true)->first();
+
+            if ($address) {
+                session(['address' => $address->toArray()]);
+            }
         }
     
         // Enviar los items a la vista

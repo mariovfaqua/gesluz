@@ -149,10 +149,7 @@
                                     <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" value="{{ $address['codigo_postal'] ?? '' }}" required>
                                 </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
                             </form>
                         </div>
                     </div>
