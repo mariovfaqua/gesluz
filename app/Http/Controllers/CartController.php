@@ -97,4 +97,10 @@ class CartController extends Controller
 
         return redirect()->back();
     }
+
+    public function clearAddress(Request $request)
+    {
+        session()->forget('address');
+        return back();
+    }    
 }
