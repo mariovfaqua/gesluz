@@ -12,8 +12,7 @@ Auth::routes();
 Route::get('/', [MainController::class, 'index'])->name('inicio');
 
 // ----- Home
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
- ->name('home'); 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home'); 
 
 // ----- Items
 Route::get('/items/link/{type}/{value}', [ItemController::class, 'quickLink'])->name('items.quickLink');
@@ -21,6 +20,7 @@ Route::get('/items/adminList', [ItemController::class, 'getAdminList'])->name('i
 Route::resource('items', ItemController::class);
 
 // ----- Orders
+Route::get('/orders/adminList', [OrderController::class, 'getAdminList'])->name('orders.adminList');
 Route::resource('orders', OrderController::class);
 
 // ----- Carrito

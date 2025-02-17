@@ -34,6 +34,13 @@
             <!-- Comprobación del rol -->
             @if (Auth::user()->role === 'admin')
                 <div class="admin-grid mt-4">
+                    <!-- Lista de pedidos -->
+                    <a href="{{ route('orders.adminList') }}">
+                        <div class="admin-card p-3 border rounded">
+                            Pedidos
+                        </div>
+                    </a>
+
                     <!-- Crear Item -->
                     <a href="{{ route('items.create') }}">
                         <div class="admin-card p-3 border rounded mb-3">

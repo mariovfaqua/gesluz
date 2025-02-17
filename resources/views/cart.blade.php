@@ -72,40 +72,42 @@
                     $address = session('address', []);
                 @endphp
 
-                @if(!$address)
-                <button class="btn btn-secondary w-100 mt-3 p-2" data-bs-toggle="modal" data-bs-target="#addressModal">
-                    Añadir dirección de envío
-                </button>
-                @else
-                    <!-- Mostrar resumen de la dirección -->
-                    <div class="p-3 mt-3 border rounded bg-light position-relative">
-                        <strong class="fw-bold">Dirección de envío</strong>
-                        <p class="mb-1">{{ $address['nombre'] }}</p>
-                        <p class="mb-1"> {{ $address['linea_1'] }}{{ $address['linea_2'] ? ', ' . $address['linea_2'] : '' }}</p>
-                        <p class="mb-1"> {{ $address['ciudad'] }}, {{ $address['provincia'] }} {{ $address['pais'] }} {{ $address['codigo_postal'] }}</p>
+                @if(count($items) > 0)
+                    @if(!$address)
+                    <button class="btn btn-secondary w-100 mt-3 p-2" data-bs-toggle="modal" data-bs-target="#addressModal">
+                        Añadir dirección de envío
+                    </button>
+                    @else
+                        <!-- Mostrar resumen de la dirección -->
+                        <div class="p-3 mt-3 border rounded bg-light position-relative">
+                            <strong class="fw-bold">Dirección de envío</strong>
+                            <p class="mb-1">{{ $address['nombre'] }}</p>
+                            <p class="mb-1"> {{ $address['linea_1'] }}{{ $address['linea_2'] ? ', ' . $address['linea_2'] : '' }}</p>
+                            <p class="mb-1"> {{ $address['ciudad'] }}, {{ $address['provincia'] }} {{ $address['pais'] }} {{ $address['codigo_postal'] }}</p>
 
-                        <!-- Botón para editar la dirección -->
-                        <button class="btn btn-secondary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#addressModal">
-                            Editar dirección
-                        </button>
+                            <!-- Botón para editar la dirección -->
+                            <button class="btn btn-secondary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#addressModal">
+                                Editar dirección
+                            </button>
 
-                        <!-- Botón para borrar la sesión -->
-                        <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                            <!-- Botón para borrar la sesión -->
+                            <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-none border-0 bg-transparent" title="Eliminar dirección">
+                                    <span class="btn-close"></span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Botón para finalizar pedido activado -->
+                        <form action="{{ route('orders.store') }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-outline-none border-0 bg-transparent" title="Eliminar dirección">
-                                <span class="btn-close"></span>
+                            <input id="precio_total" name="precio_total" type="hidden" value="{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }}">
+                            <button type="submit" class="btn btn-warning w-100 mt-3 p-2 fw-bold">
+                                Finalizar pedido
                             </button>
                         </form>
-                    </div>
-
-                    <!-- Botón para finalizar pedido activado -->
-                    <form action="{{ route('orders.store') }}" method="POST">
-                        @csrf
-                        <input id="precio_total" name="precio_total" type="hidden" value="{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }}">
-                        <button type="submit" class="btn btn-warning w-100 mt-3 p-2 fw-bold">
-                            Finalizar pedido
-                        </button>
-                    </form>
+                    @endif
                 @endif
             </div>
 
