@@ -16,4 +16,10 @@ class Order extends Model
         'id_user',
         'id_address',
     ];
+
+    /** Relación muchos a muchos con Items */
+    public function items()
+    {
+        return $this->belongsToMany(Tag::class, 'order_items', 'id_order', 'id_item');
+    }    
 }

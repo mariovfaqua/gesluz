@@ -90,20 +90,27 @@ class OrderController extends Controller
             $order->save();
 
             // Actualizar el stock de los items según el carrito
+            $orderItems = [];
             foreach ($cart as $cartItem) {
                 $item = $cartItem['item'];
                 if ($item instanceof \App\Models\Item) { // Verificar que realmente es una instancia de Item
                     $item->stock -= $cartItem['cantidad'];
                     $item->save();
+
+                    // Añadir al array de sincronización
+                    $orderItems[$item->id] = ['cantidad' => $cartItem['cantidad']];
                 }
             }
+
+            // Sincronizar la tabla order_items
+            $order->items()->sync($orderItems);
 
             // Vaciar el carrito después de procesar el pedido
             session()->forget('cart');
 
             DB::commit(); // Confirmar la transacción
             return redirect()->route('home')->with('success', 'Pedido actualizado correctamente.');
-            
+
         } catch (\Exception $e) {
             DB::rollBack(); // Revertir la transacción en caso de error
             return back()->with('error', 'Error al procesar el pedido: ' . $e->getMessage());
