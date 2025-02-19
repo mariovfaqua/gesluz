@@ -20,7 +20,6 @@ Route::get('/items/adminList', [ItemController::class, 'getAdminList'])->name('i
 Route::resource('items', ItemController::class);
 
 // ----- Orders
-Route::get('/orders/adminList', [OrderController::class, 'getAdminList'])->name('orders.adminList');
 Route::resource('orders', OrderController::class);
 
 // ----- Carrito

@@ -35,7 +35,7 @@
             @if (Auth::user()->role === 'admin')
                 <div class="admin-grid mt-4">
                     <!-- Lista de pedidos -->
-                    <a href="{{ route('orders.adminList') }}">
+                    <a href="{{ route('orders.index') }}">
                         <div class="admin-card p-3 border rounded">
                             Pedidos
                         </div>

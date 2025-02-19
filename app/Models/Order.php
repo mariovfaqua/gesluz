@@ -21,5 +21,11 @@ class Order extends Model
     public function items()
     {
         return $this->belongsToMany(Tag::class, 'order_items', 'id_order', 'id_item');
-    }    
+    }
+    
+    // Relación muchos a uno con Address
+    public function address()
+    {
+        return $this->belongsTo(Address::class, 'id_address');
+    }
 }

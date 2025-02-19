@@ -20,4 +20,10 @@ class Address extends Model
         'primaria',
         'id_user',
     ];
+
+    // Relación uno a muchos con Orders
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'id_address');
+    }
 }

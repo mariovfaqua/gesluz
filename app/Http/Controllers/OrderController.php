@@ -17,7 +17,20 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        if (auth()->user()->role !== 'admin') {
+            // Si el usuario no es admin, redirigir con un mensaje de error
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
+        $pendientes = Order::where('estatus', 0)
+        ->orderBy('fecha', 'desc')
+        ->get();
+
+        $completados = Order::where('estatus', 1)
+        ->orderBy('fecha', 'desc')
+        ->paginate(20);
+
+        return view('orders.adminList')->with(['pendientes'=>$pendientes, 'completados'=>$completados]);
     }
 
     /**
@@ -120,9 +133,12 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ORder $oRder)
+    public function show($id)
     {
-        //
+        // Recuperar el pedido por ID
+        $order = Order::with(['items', 'address'])->findOrFail($id);
+
+        return view('orders.detail')->with(['order'=>$order]);
     }
 
     /**
@@ -147,18 +163,5 @@ class OrderController extends Controller
     public function destroy(ORder $oRder)
     {
         //
-    }
-
-    public function getAdminList(){
-        if (auth()->user()->role !== 'admin') {
-            // Si el usuario no es admin, redirigir con un mensaje de error
-            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
-        }
-
-        $orders = Order::where('estatus', 0)
-        ->orderBy('fecha', 'desc')
-        ->get();
-
-        return view('orders.adminList')->with(['orders'=>$orders]);
     }
 }
