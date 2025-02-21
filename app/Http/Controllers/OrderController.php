@@ -135,10 +135,23 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        // Recuperar el pedido por ID
-        $order = Order::with(['items', 'address'])->findOrFail($id);
+        // Recuperar el pedido por ID junto con la dirección
+        $order = Order::with('address')->findOrFail($id);
 
-        return view('orders.detail')->with(['order'=>$order]);
+        // Recuperar los id_item y cantidades de la tabla order_items
+        $cantidades = DB::table('order_items')
+            ->where('id_order', $id)
+            ->pluck('cantidad', 'id_item'); // Devuelve un array: [id_item => cantidad]
+
+        // Obtener los detalles de los items
+        $items = Item::whereIn('id', array_keys($cantidades->toArray()))->get();
+
+        // Añadir la cantidad a cada item
+        foreach ($items as $item) {
+            $item->cantidad = $cantidades[$item->id]; // Asignar la cantidad recuperada
+        }
+
+        return view('orders.detail')->with(['order'=>$order, 'items'=>$items]);
     }
 
     /**
