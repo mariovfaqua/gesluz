@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container mt-4">
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <h2>Lista de pedidos</h2>
 
     @if($pendientes->isEmpty())
@@ -28,10 +33,10 @@
                         </td>
                         <td>
                             <a href="{{ route('orders.show', $order->id) }}" class="btn btn-info btn-sm">Ver</a>
-                            <form action="{{ route('orders.destroy', $order->id) }}" method="POST" class="d-inline">
-                                @csrf
+                            <form action="{{ route('orders.destroy', $order) }}" method="POST" class="d-inline">
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas cancelar este pedido?');">Cancelar</button>
                             </form>
                         </td>
                     </tr>

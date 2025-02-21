@@ -135,6 +135,11 @@ class OrderController extends Controller
      */
     public function show($id)
     {
+        if (auth()->user()->role !== 'admin') {
+            // Si el usuario no es admin, redirigir con un mensaje de error
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
         // Recuperar el pedido por ID junto con la dirección
         $order = Order::with('address')->findOrFail($id);
 
@@ -173,8 +178,23 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ORder $oRder)
+    public function destroy(Order $order)
     {
-        //
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para realizar esta acción.');
+        }
+
+        try {
+            // Eliminar las relaciones con items en order_items
+            $order->items()->detach();
+
+            // Eliminar el pedido
+            $order->delete();
+
+            return redirect()->route('orders.index')->with('success', 'Pedido eliminado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('orders.index')->with('error', 'Hubo un problema al eliminar el pedido.');
+        }
     }
+
 }
