@@ -7,7 +7,8 @@
             {{ session('success') }}
         </div>
     @endif
-    <h2>Lista de pedidos</h2>
+    <h4>Lista de pedidos</h2>
+    <hr>
 
     @if($pendientes->isEmpty())
         <p>No hay pedidos pendientes.</p>
@@ -33,6 +34,11 @@
                         </td>
                         <td>
                             <a href="{{ route('orders.show', $order->id) }}" class="btn btn-info btn-sm">Ver</a>
+                            <form action="{{ route('orders.update', $order) }}" method="POST" class="d-inline">
+                                @method('PUT')
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Completar</button>
+                            </form>
                             <form action="{{ route('orders.destroy', $order) }}" method="POST" class="d-inline">
                                 @method('DELETE')
                                 @csrf

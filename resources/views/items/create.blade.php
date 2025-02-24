@@ -8,7 +8,8 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
+            <h4>Crear un nuevo item</h4>
+                <div class="card mt-3">
                     <div class="card-header">Añadir item</div>
                     <form class="card-body" action="{{ route('items.store') }}" method="POST">
                         @csrf <!-- Token de seguridad obligatorio en formularios de Laravel -->

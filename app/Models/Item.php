@@ -26,7 +26,7 @@ class Item extends Model
         return $this->belongsToMany(Tag::class, 'item_tags', 'id_item', 'id_tag');
     }
 
-    /** Relación muchos a muchos con Tag */
+    /** Relación muchos a muchos con Order */
     public function orders()
     {
         return $this->belongsToMany(Tag::class, 'order_items', 'id_item', 'id_order');

@@ -17,7 +17,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect('/login'); // Redirigir si no está autenticado
+            return redirect('home'); // Redirigir si no está autenticado
         }
 
         if (Auth::user()->role !== $role) {

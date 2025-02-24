@@ -17,7 +17,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->role !== 'admin') {
+        if (!auth()->user()|| auth()->user()->role !== 'admin') {
             // Si el usuario no es admin, redirigir con un mensaje de error
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
@@ -135,7 +135,7 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        if (auth()->user()->role !== 'admin') {
+        if (!auth()->user() || auth()->user()->role !== 'admin') {
             // Si el usuario no es admin, redirigir con un mensaje de error
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
@@ -170,10 +170,22 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ORder $oRder)
+    public function update(Order $order)
     {
-        //
-    }
+        if (!auth()->user() || auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+    
+        try {
+            // Establecer el estatus del pedido como completado
+            $order->estatus = true;
+            $order->save();
+    
+            return redirect()->back()->with('success', 'Pedido actualizado correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Hubo un problema al actualizar el pedido.');
+        }
+    }    
 
     /**
      * Remove the specified resource from storage.
