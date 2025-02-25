@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CartController;
 
 Auth::routes(); 
@@ -21,6 +22,10 @@ Route::resource('items', ItemController::class);
 
 // ----- Orders
 Route::resource('orders', OrderController::class);
+
+// ----- Addresses
+Route::get('/addresses/primary/{id}', [AddressController::class, 'setPrimary'])->name('addresses.primary');
+Route::resource('addresses', AddressController::class);
 
 // ----- Carrito
 Route::get('/cart', [CartController::class, 'index'])->name('cart');

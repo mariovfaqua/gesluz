@@ -16,8 +16,6 @@
                 </div>
             @endif
 
-            <!-- {{ __('You are logged in!') }} -->
-
             @if (session('error'))
                 <div class="alert alert-danger" role="alert">
                     {{ session('error') }}
@@ -30,8 +28,7 @@
                 </div>
             @endif
 
-
-            <!-- Comprobación del rol -->
+            <!-- Opciones de administrador -->
             @if (Auth::user()->role === 'admin')
                 <div class="admin-grid mt-4">
                     <!-- Lista de pedidos -->
@@ -56,6 +53,17 @@
                     </a>
                 </div>
             @endif
+
+            <!-- Opciones de usuario -->
+            <div class="admin-grid mt-4">
+                    <!-- Lista de pedidos -->
+                    <a href="{{ route('addresses.index') }}">
+                        <div class="admin-card p-3 border rounded">
+                            Direcciones
+                        </div>
+                    </a>
+                </div>
+
         </div>
     </div>
 </div>
