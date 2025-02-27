@@ -111,48 +111,105 @@
                 @endif
             </div>
 
-            <!-- Modal -->
+            <!-- Modal de dirección -->
             <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModal" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Añade una dirección de envío</h5>
+                            <h5 class="modal-title">Selecciona una dirección de envío</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="addressForm" action="{{ route('cart.storeAddress') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="nombre" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $address['nombre'] ?? '' }}" required>
+                            <!-- Direcciones guardadas -->
+                            @if(auth()->check()) 
+                                <div class="accordion" id="savedAddressAccordion">
+                                    <div class="accordion-item border-0">
+                                        <h2 class="accordion-header" id="headingSavedAddress">
+                                            <button class="accordion-button bg-transparent p-2 shadow-none fw-bold" 
+                                                type="button" 
+                                                data-bs-toggle="collapse" 
+                                                data-bs-target="#collapseSavedAddress" 
+                                                aria-expanded="true" 
+                                                aria-controls="collapseSavedAddress">
+                                                Direcciones guardadas
+                                            </button>
+                                        </h2>
+                                        <div id="collapseSavedAddress" class="accordion-collapse collapse show" aria-labelledby="collapseSavedAddress" data-bs-parent="#savedAddressAccordion">
+                                            <div class="accordion-body px-1 py-2">
+                                                <form id="savedAddressForm">
+                                                    <div class="list-group">
+                                                        @foreach ($addresses as $address)
+                                                            <label class="list-group-item d-flex align-items-start">
+                                                                <input class="form-check-input me-2" type="radio" name="selected_address" value="{{ $address->id }}" {{ session('address.id') == $address->id ? 'checked' : '' }}>
+                                                                <div>
+                                                                    <strong>{{ $address->nombre }}</strong><br>
+                                                                    {{ $address->linea_1 }} {{ $address->linea_2 }}<br>
+                                                                    {{ $address->ciudad }}, {{ $address->provincia }} ({{ $address->codigo_postal }})<br>
+                                                                    {{ $address->pais }}
+                                                                </div>
+                                                            </label>
+                                                        @endforeach
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="linea_1" class="form-label">Línea 1</label>
-                                    <input type="text" class="form-control" id="linea_1" name="linea_1" value="{{ $address['linea_1'] ?? '' }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="linea_2" class="form-label">Línea 2 (Opcional)</label>
-                                    <input type="text" class="form-control" id="linea_2" name="linea_2" value="{{ $address['linea_2'] ?? '' }}">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="pais" class="form-label">País</label>
-                                    <input type="text" class="form-control" id="pais" name="pais" value="{{ $address['pais'] ?? '' }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="provincia" class="form-label">Provincia</label>
-                                    <input type="text" class="form-control" id="provincia" name="provincia" value="{{ $address['provincia'] ?? '' }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="ciudad" class="form-label">Ciudad</label>
-                                    <input type="text" class="form-control" id="ciudad" name="ciudad" value="{{ $address['ciudad'] ?? '' }}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="codigo_postal" class="form-label">Código Postal</label>
-                                    <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" value="{{ $address['codigo_postal'] ?? '' }}" required>
-                                </div>
+                            @endif
 
-                                <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
-                            </form>
+                            <!-- Añadir nueva dirección -->
+                            <div class="accordion" id="newAddressAccordion">
+                                <div class="accordion-item border-0">
+                                    <h2 class="accordion-header" id="headingNewAddress">
+                                        <button class="accordion-button {{ !auth()->check() ? '' : 'collapsed' }} bg-transparent p-2 shadow-none fw-bold" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#collapseNewAddress" 
+                                            aria-expanded="false" 
+                                            aria-controls="collapseNewAddress">
+                                            Añadir nueva dirección
+                                        </button>
+                                    </h2>
+                                    <div id="collapseNewAddress" class="accordion-collapse collapse {{ !auth()->check() ? 'show' : '' }}" aria-labelledby="collapseNewAddress" data-bs-parent="#newAddressAccordion">
+                                        <div class="accordion-body px-1 py-2">
+                                            <!-- Formulario de nueva dirección -->
+                                            <form id="newAddressForm" action="{{ route('cart.storeAddress') }}" method="POST">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <label for="nombre" class="form-label">Nombre</label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $address['nombre'] ?? '' }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="linea_1" class="form-label">Línea 1</label>
+                                                <input type="text" class="form-control" id="linea_1" name="linea_1" value="{{ $address['linea_1'] ?? '' }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="linea_2" class="form-label">Línea 2 (Opcional)</label>
+                                                <input type="text" class="form-control" id="linea_2" name="linea_2" value="{{ $address['linea_2'] ?? '' }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="pais" class="form-label">País</label>
+                                                <input type="text" class="form-control" id="pais" name="pais" value="{{ $address['pais'] ?? '' }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="provincia" class="form-label">Provincia</label>
+                                                <input type="text" class="form-control" id="provincia" name="provincia" value="{{ $address['provincia'] ?? '' }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="ciudad" class="form-label">Ciudad</label>
+                                                <input type="text" class="form-control" id="ciudad" name="ciudad" value="{{ $address['ciudad'] ?? '' }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="codigo_postal" class="form-label">Código Postal</label>
+                                                <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" value="{{ $address['codigo_postal'] ?? '' }}" required>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

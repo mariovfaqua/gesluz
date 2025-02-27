@@ -14,30 +14,36 @@ class CartController extends Controller
     {
         // Obtener el carrito desde la sesión
         $cart = session()->get('cart', []);
-    
+
         // Recuperar los IDs de los items en el carrito
         $itemIds = array_keys($cart);
-    
+
         // Buscar los items en la base de datos
         $items = Item::whereIn('id', $itemIds)->get();
-    
-        // Agregar la cantidad
+
+        // Agregar la cantidad a cada item
         foreach ($items as $item) {
             $item->cantidad = $cart[$item->id]['cantidad'] ?? 1;
         }
 
-        // Intentar guardar en la sesión la dirección primaria
-        if (!session()->has('address') && Auth::check()) {
-            $address = Address::where('id_user', Auth::id())->where('primaria', true)->first();
+        // Recuperar todas las direcciones del usuario autenticado
+        $addresses = [];
+        if (auth()->check()) {
+            $addresses = Address::where('id_user', auth()->user()->id)->get();
 
-            if ($address) {
-                session(['address' => $address->toArray()]);
+            // Intentar guardar la dirección primaria en la sesión
+            if (!session()->has('address')) {
+                $primaryAddress = $addresses->where('primaria', true)->first();
+
+                if ($primaryAddress) {
+                    session(['address' => $primaryAddress->toArray()]);
+                }
             }
         }
-    
-        // Enviar los items a la vista
-        return view('cart', compact('items'));
-    }    
+
+        // Enviar los items y direcciones a la vista
+        return view('cart')->with(['items'=>$items, 'addresses'=>$addresses]);
+    }
 
     // Agregar producto al carrito
     public function add(Request $request)
