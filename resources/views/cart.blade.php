@@ -136,11 +136,17 @@
                                         </h2>
                                         <div id="collapseSavedAddress" class="accordion-collapse collapse show" aria-labelledby="collapseSavedAddress" data-bs-parent="#savedAddressAccordion">
                                             <div class="accordion-body px-1 py-2">
-                                                <form id="savedAddressForm">
+                                                <form id="savedAddressForm" action="{{ route('cart.storeAddress') }}" method="POST">
+                                                    @csrf
                                                     <div class="list-group">
                                                         @foreach ($addresses as $address)
                                                             <label class="list-group-item d-flex align-items-start">
-                                                                <input class="form-check-input me-2" type="radio" name="selected_address" value="{{ $address->id }}" {{ session('address.id') == $address->id ? 'checked' : '' }}>
+                                                                <input class="form-check-input me-2" 
+                                                                    type="radio"
+                                                                    name="selected_address" 
+                                                                    value="{{ $address->id }}" 
+                                                                    {{ session('address.id') == $address->id ? 'checked' : '' }}
+                                                                >
                                                                 <div>
                                                                     <strong>{{ $address->nombre }}</strong><br>
                                                                     {{ $address->linea_1 }} {{ $address->linea_2 }}<br>
@@ -150,6 +156,7 @@
                                                             </label>
                                                         @endforeach
                                                     </div>
+                                                    <button type="submit" class="btn btn-primary w-100 mt-3">Guardar cambios</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -174,38 +181,38 @@
                                         <div class="accordion-body px-1 py-2">
                                             <!-- Formulario de nueva dirección -->
                                             <form id="newAddressForm" action="{{ route('cart.storeAddress') }}" method="POST">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="nombre" class="form-label">Nombre</label>
-                                                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $address['nombre'] ?? '' }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="linea_1" class="form-label">Línea 1</label>
-                                                <input type="text" class="form-control" id="linea_1" name="linea_1" value="{{ $address['linea_1'] ?? '' }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="linea_2" class="form-label">Línea 2 (Opcional)</label>
-                                                <input type="text" class="form-control" id="linea_2" name="linea_2" value="{{ $address['linea_2'] ?? '' }}">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="pais" class="form-label">País</label>
-                                                <input type="text" class="form-control" id="pais" name="pais" value="{{ $address['pais'] ?? '' }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="provincia" class="form-label">Provincia</label>
-                                                <input type="text" class="form-control" id="provincia" name="provincia" value="{{ $address['provincia'] ?? '' }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="ciudad" class="form-label">Ciudad</label>
-                                                <input type="text" class="form-control" id="ciudad" name="ciudad" value="{{ $address['ciudad'] ?? '' }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="codigo_postal" class="form-label">Código Postal</label>
-                                                <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" value="{{ $address['codigo_postal'] ?? '' }}" required>
-                                            </div>
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="nombre" class="form-label">Nombre</label>
+                                                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $address['nombre'] ?? '' }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="linea_1" class="form-label">Línea 1</label>
+                                                    <input type="text" class="form-control" id="linea_1" name="linea_1" value="{{ $address['linea_1'] ?? '' }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="linea_2" class="form-label">Línea 2 (Opcional)</label>
+                                                    <input type="text" class="form-control" id="linea_2" name="linea_2" value="{{ $address['linea_2'] ?? '' }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="pais" class="form-label">País</label>
+                                                    <input type="text" class="form-control" id="pais" name="pais" value="{{ $address['pais'] ?? '' }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="provincia" class="form-label">Provincia</label>
+                                                    <input type="text" class="form-control" id="provincia" name="provincia" value="{{ $address['provincia'] ?? '' }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="ciudad" class="form-label">Ciudad</label>
+                                                    <input type="text" class="form-control" id="ciudad" name="ciudad" value="{{ $address['ciudad'] ?? '' }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="codigo_postal" class="form-label">Código Postal</label>
+                                                    <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" value="{{ $address['codigo_postal'] ?? '' }}" required>
+                                                </div>
 
-                                            <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
-                                        </form>
+                                                <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

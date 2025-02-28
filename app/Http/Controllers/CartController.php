@@ -98,19 +98,25 @@ class CartController extends Controller
     // Guardar la dirección
     public function storeAddress(Request $request)
     {
-        // Validar los datos del formulario
-        $validatedData = $request->validate([
-            'nombre'        => 'required|string|max:255',
-            'linea_1'       => 'required|string|max:255',
-            'linea_2'       => 'nullable|string|max:255',
-            'pais'          => 'required|string|max:100',
-            'provincia'     => 'required|string|max:100',
-            'ciudad'        => 'required|string|max:100',
-            'codigo_postal' => 'required|string|max:20',
-        ]);
+        if ($request->has('selected_address')) {
+            // Si se seleccionó una dirección, buscarla en la base de datos y guardarla en la sesión
+            $address = Address::findOrFail($request->selected_address);
+            session(['address' => $address->toArray()]);
+        } else {
+            // Validar los datos del formulario
+            $validatedData = $request->validate([
+                'nombre'        => 'required|string|max:255',
+                'linea_1'       => 'required|string|max:255',
+                'linea_2'       => 'nullable|string|max:255',
+                'pais'          => 'required|string|max:100',
+                'provincia'     => 'required|string|max:100',
+                'ciudad'        => 'required|string|max:100',
+                'codigo_postal' => 'required|string|max:20',
+            ]);
 
-        // Guardar en la sesión
-        session(['address' => $validatedData]);
+            // Guardar en la sesión la nueva dirección ingresada
+            session(['address' => $validatedData]);
+        }
 
         return redirect()->back();
     }
