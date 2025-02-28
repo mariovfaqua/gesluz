@@ -35,8 +35,29 @@ class AddressController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // Verificar si el usuario está autenticado
+        if (!auth()->check()) {
+            return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para realizar esta acción.');
+        }
+    
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
+            'nombre'        => 'required|string|max:255',
+            'linea_1'       => 'required|string|max:255',
+            'linea_2'       => 'nullable|string|max:255',
+            'pais'          => 'required|string|max:100',
+            'provincia'     => 'required|string|max:100',
+            'ciudad'        => 'required|string|max:100',
+            'codigo_postal' => 'required|string|max:20',
+        ]);
+    
+        // Crear la dirección en la base de datos con el id del usuario
+        $address = new Address($validatedData);
+        $address->id_user = auth()->id();
+        $address->save();
+    
+        return redirect()->back()->with('success', 'Dirección guardada correctamente.');
+    }    
 
     /**
      * Display the specified resource.
@@ -73,7 +94,7 @@ class AddressController extends Controller
     public function setPrimary($id)
     {
         if (!auth()->check()) {
-            return redirect()->route('home')->with('error', 'Debes iniciar sesión para realizar esta acción.');
+            return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para realizar esta acción.');
         }
     
         $user = auth()->user();
