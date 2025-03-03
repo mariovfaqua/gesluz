@@ -88,8 +88,27 @@ class AddressController extends Controller
      */
     public function destroy(Address $address)
     {
-        //
+        // Verificar si el usuario está autenticado
+        if (!auth()->check()) {
+            return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para realizar esta acción.');
+        }
+
+        // Verificar que la dirección pertenezca al usuario autenticado
+        if ($address->id_user !== auth()->id()) {
+            return redirect()->route('addresses.index')->with('error', 'No tienes permiso para eliminar esta dirección.');
+        }
+
+        // Eliminar la dirección
+        $address->delete();
+
+        // Si la dirección eliminada era la guardada en sesión, eliminarla de la sesión
+        if (session('address.id') == $address->id) {
+            session()->forget('address');
+        }
+
+        return redirect()->route('addresses.index')->with('success', 'Dirección eliminada correctamente.');
     }
+
 
     public function setPrimary($id)
     {
