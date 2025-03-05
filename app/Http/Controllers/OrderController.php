@@ -68,10 +68,13 @@ class OrderController extends Controller
                             ->where('ciudad', $addressData['ciudad'])
                             ->where('pais', $addressData['pais'])
                             ->where('codigo_postal', $addressData['codigo_postal'])
+                            ->when(auth()->check(), function ($query) {
+                                return $query->where('id_user', auth()->id());
+                            })
                             ->first();
 
-            // Si no existe, crear la nueva dirección
-            if (!$address) {
+            // Si no existe o no está asociada al usurario, crear la nueva dirección
+            if (!$address || (auth()->check() && auth()->id() !== $address->id_user)) {
                 $address = new Address();
                 $address->nombre = $addressData['nombre'];
                 $address->linea_1 = $addressData['linea_1'];
@@ -81,9 +84,9 @@ class OrderController extends Controller
                 $address->pais = $addressData['pais'];
                 $address->codigo_postal = $addressData['codigo_postal'];
 
-                // Si el usuario está autenticado, guardar su ID en la dirección
-                if (Auth::check()) {
-                    $address->id_user = Auth::id();
+                // Si el usuario está autenticado, guardar su ID en la dirección nueva
+                if (auth()->check()) {
+                    $address->id_user = auth()->id();
                 }
 
                 $address->save();

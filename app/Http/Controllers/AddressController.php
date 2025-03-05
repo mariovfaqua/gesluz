@@ -27,7 +27,11 @@ class AddressController extends Controller
      */
     public function create()
     {
-        //
+        if (!auth()->check()) {
+            return redirect()->route('inicio')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
+        return view('addresses.form');
     }
 
     /**
@@ -55,8 +59,13 @@ class AddressController extends Controller
         $address = new Address($validatedData);
         $address->id_user = auth()->id();
         $address->save();
-    
-        return redirect()->back()->with('success', 'Dirección guardada correctamente.');
+
+        // Si la URL anterior es 'addresses/create', redirigir a index, de lo contrario, volver atrás
+        if (str_contains(url()->previous(), route('addresses.create'))) {
+            return redirect()->route('addresses.index')->with('success', 'Dirección guardada correctamente.');
+        } else {
+            return redirect()->back()->with('success', 'Dirección guardada correctamente.');
+        }
     }    
 
     /**
@@ -87,7 +96,7 @@ class AddressController extends Controller
         }
 
         // Pasar el objeto address a la vista edit
-        return view('addresses.edit', ['address' => $address]);
+        return view('addresses.form', ['address' => $address]);
     }
 
     /**

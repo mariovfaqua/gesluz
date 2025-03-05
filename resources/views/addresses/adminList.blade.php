@@ -10,9 +10,10 @@
 
     <div class="d-flex gap-3 align-items-center">
         <h4>Administrar direcciones</h4>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">
+        <a class="btn btn-primary" href="{{ route('addresses.create') }}">Añadir dirección</a>
+        <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">
             Añadir dirección
-        </button>
+        </button> -->
     </div>
     <hr>
 
