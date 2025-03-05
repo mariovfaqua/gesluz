@@ -1,15 +1,10 @@
 @extends('layouts.main')
 
-@section('styles')
-    <!-- <link rel="stylesheet" href="{{ asset('styles/index.css') }}"> -->
-@endsection
-
 @section('content')
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <h4>Editar item</h4>
-                <div class="card mt-3">
+                <div class="card">
                     <div class="card-header">Editar item</div>
                     <form class="card-body" action="{{ route('items.update', $item->id) }}" method="POST">
                     @method('PUT')

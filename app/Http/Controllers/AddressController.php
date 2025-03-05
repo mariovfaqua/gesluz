@@ -72,7 +72,22 @@ class AddressController extends Controller
      */
     public function edit(Address $address)
     {
-        //
+        // Verificar si el usuario está autenticado
+        if (!auth()->check()) {
+            return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para realizar esta acción.');
+        }
+
+        // $address = Address::where('id', $id)
+        // ->where('id_user', auth()->id()) // Asegurarte de que la dirección pertenezca al usuario
+        // ->first();
+
+        // Verificar que la dirección exista y pertenezca al usuario autenticado
+        if ($address->id_user !== auth()->id()) {
+            return redirect()->route('addresses.index')->with('error', 'No tienes permiso para editar esta dirección.');
+        }
+
+        // Pasar el objeto address a la vista edit
+        return view('addresses.edit', ['address' => $address]);
     }
 
     /**
@@ -80,8 +95,28 @@ class AddressController extends Controller
      */
     public function update(Request $request, Address $address)
     {
-        //
-    }
+        // Verificar que el usuario autenticado es el propietario de la dirección
+        if ($address->id_user !== auth()->id()) {
+            return redirect()->route('addresses.index')->with('error', 'No tienes permiso para editar esta dirección.');
+        }
+    
+        // Validación de los datos
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'linea_1' => 'required|string|max:255',
+            'linea_2' => 'nullable|string|max:255',
+            'pais' => 'required|string|max:100',
+            'provincia' => 'required|string|max:100',
+            'ciudad' => 'required|string|max:100',
+            'codigo_postal' => 'required|string|max:20',
+        ]);
+    
+        // Actualizar la dirección con los datos validados
+        $address->update($validatedData);
+    
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('addresses.index')->with('success', 'Dirección actualizada correctamente.');
+    }    
 
     /**
      * Remove the specified resource from storage.
