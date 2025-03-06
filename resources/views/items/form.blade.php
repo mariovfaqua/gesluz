@@ -5,7 +5,9 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Añadir item</div>
+                    <div class="card-header">
+                        {{ Request::is('items/create') ? 'Crear artículo' : (Request::is('items/*/edit*') ? 'Editar artículo' : 'Añadir artículo') }}
+                    </div>
                     <form class="card-body" action="{{ isset($item) ? route('items.update', $item->id) : route('items.store')}}" method="POST">
                         @if(isset($item))
                             @method('PUT')

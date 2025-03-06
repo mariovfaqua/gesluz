@@ -5,7 +5,9 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Editar dirección</div>
+                    <div class="card-header">
+                        {{ Request::is('addresses/create') ? 'Añadir dirección' : (Request::is('addresses/*/edit*') ? 'Editar dirección' : 'Añadir dirección') }}
+                    </div>
                         <!-- Determina la ruta dependiendo de la variable address -->
                         <form class="card-body" action="{{ isset($address) ? route('addresses.update', $address->id) : route('addresses.store') }}" method="POST">
                             @csrf
@@ -15,15 +17,15 @@
 
                             <div class="mb-3">
                                 <label for="nombre" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ $address->nombre ?? ''}}" required>
+                                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del destinatario" value="{{ $address->nombre ?? ''}}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="linea_1" class="form-label">Línea 1</label>
-                                <input type="text" class="form-control" id="linea_1" name="linea_1" value="{{ $address->linea_1 ?? ''}}" required>
+                                <input type="text" class="form-control" id="linea_1" name="linea_1" placeholder="Escribe la dirección" value="{{ $address->linea_1 ?? ''}}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="linea_2" class="form-label">Línea 2 (Opcional)</label>
-                                <input type="text" class="form-control" id="linea_2" name="linea_2" value="{{ $address->linea_2 ?? ''}}">
+                                <input type="text" class="form-control" id="linea_2" name="linea_2" placeholder="Información adicional de dirección" value="{{ $address->linea_2 ?? ''}}">
                             </div>
                             <div class="mb-3">
                                 <label for="pais" class="form-label">País</label>
