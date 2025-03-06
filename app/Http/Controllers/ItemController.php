@@ -40,7 +40,7 @@ class ItemController extends Controller
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
-        return view('items.create');
+        return view('items.form');
     }
 
     /**
@@ -103,7 +103,7 @@ class ItemController extends Controller
     
         $selectedTags = $item->tags->pluck('id')->toArray();
     
-        return view('items.edit')->with(['item'=>$item, 'selectedTags'=>$selectedTags]);
+        return view('items.form')->with(['item'=>$item, 'selectedTags'=>$selectedTags]);
     }
 
     /**

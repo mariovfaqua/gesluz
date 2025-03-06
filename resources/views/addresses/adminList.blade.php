@@ -8,6 +8,12 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="d-flex gap-3 align-items-center">
         <h4>Administrar direcciones</h4>
         <a class="btn btn-primary" href="{{ route('addresses.create') }}">Añadir dirección</a>

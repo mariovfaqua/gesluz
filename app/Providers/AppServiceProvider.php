@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             ]);    
         });
 
-        View::composer('items.create', function ($view) {
+        View::composer('items.form', function ($view) {
             $brands = Brand::all(); // Recupera todas las marcas
             $tags = Tag::all(); // Recupera todos los tags
             

@@ -54,13 +54,28 @@ class AddressController extends Controller
             'ciudad'        => 'required|string|max:100',
             'codigo_postal' => 'required|string|max:20',
         ]);
+
+        // COmprueba si el usuario ya tiene la dirección guardada
+        $existe = Address::where('nombre', $validatedData['nombre'])
+            ->where('linea_1', $validatedData['linea_1'])
+            ->where('linea_2', $validatedData['linea_2'] ?? null)
+            ->where('provincia', $validatedData['provincia'])
+            ->where('ciudad', $validatedData['ciudad'])
+            ->where('pais', $validatedData['pais'])
+            ->where('codigo_postal', $validatedData['codigo_postal'])
+            ->where('id_user', auth()->id())
+            ->exists();
+
+        if ($existe) {
+            return redirect()->route('addresses.index')->with('error', 'Ya tienes registrada esta dirección.');
+        }
     
         // Crear la dirección en la base de datos con el id del usuario
         $address = new Address($validatedData);
         $address->id_user = auth()->id();
         $address->save();
 
-        // Si la URL anterior es 'addresses/create', redirigir a index, de lo contrario, volver atrás
+        // Si la URL anterior es 'addresses/create', redirigir a 'addresses/index', de lo contrario, volver atrás
         if (str_contains(url()->previous(), route('addresses.create'))) {
             return redirect()->route('addresses.index')->with('success', 'Dirección guardada correctamente.');
         } else {
@@ -86,16 +101,12 @@ class AddressController extends Controller
             return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para realizar esta acción.');
         }
 
-        // $address = Address::where('id', $id)
-        // ->where('id_user', auth()->id()) // Asegurarte de que la dirección pertenezca al usuario
-        // ->first();
-
         // Verificar que la dirección exista y pertenezca al usuario autenticado
         if ($address->id_user !== auth()->id()) {
             return redirect()->route('addresses.index')->with('error', 'No tienes permiso para editar esta dirección.');
         }
 
-        // Pasar el objeto address a la vista edit
+        // Pasar el objeto address a la vista del form
         return view('addresses.form', ['address' => $address]);
     }
 
@@ -132,23 +143,18 @@ class AddressController extends Controller
      */
     public function destroy(Address $address)
     {
-        // Verificar si el usuario está autenticado
-        if (!auth()->check()) {
-            return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para realizar esta acción.');
-        }
-
         // Verificar que la dirección pertenezca al usuario autenticado
         if ($address->id_user !== auth()->id()) {
             return redirect()->route('addresses.index')->with('error', 'No tienes permiso para eliminar esta dirección.');
         }
 
-        // Eliminar la dirección
-        $address->delete();
-
         // Si la dirección eliminada era la guardada en sesión, eliminarla de la sesión
         if (session('address.id') == $address->id) {
             session()->forget('address');
         }
+
+        // Eliminar la dirección
+        $address->delete();
 
         return redirect()->route('addresses.index')->with('success', 'Dirección eliminada correctamente.');
     }
