@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Order;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class AddressController extends Controller
 
         $addresses = Address::where('id_user', auth()->user()->id)->get();
 
-        return view('addresses.adminList')->with(['addresses'=>$addresses]);
+        return view('addresses.list')->with(['addresses'=>$addresses]);
     }
 
     /**
@@ -55,7 +56,7 @@ class AddressController extends Controller
             'codigo_postal' => 'required|string|max:20',
         ]);
 
-        // COmprueba si el usuario ya tiene la dirección guardada
+        // COmprobar si el usuario ya tiene la dirección guardada
         $existe = Address::where('nombre', $validatedData['nombre'])
             ->where('linea_1', $validatedData['linea_1'])
             ->where('linea_2', $validatedData['linea_2'] ?? null)
@@ -96,13 +97,8 @@ class AddressController extends Controller
      */
     public function edit(Address $address)
     {
-        // Verificar si el usuario está autenticado
-        if (!auth()->check()) {
-            return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para realizar esta acción.');
-        }
-
         // Verificar que la dirección exista y pertenezca al usuario autenticado
-        if ($address->id_user !== auth()->id()) {
+        if (!auth()->check() || $address->id_user !== auth()->id()) {
             return redirect()->route('addresses.index')->with('error', 'No tienes permiso para editar esta dirección.');
         }
 
@@ -116,7 +112,7 @@ class AddressController extends Controller
     public function update(Request $request, Address $address)
     {
         // Verificar que el usuario autenticado es el propietario de la dirección
-        if ($address->id_user !== auth()->id()) {
+        if (!auth()->check() || $address->id_user !== auth()->id()) {
             return redirect()->route('addresses.index')->with('error', 'No tienes permiso para editar esta dirección.');
         }
     
@@ -130,13 +126,23 @@ class AddressController extends Controller
             'ciudad' => 'required|string|max:100',
             'codigo_postal' => 'required|string|max:20',
         ]);
+
+        // Comprobar si la dirección está vinculada a algún pedido
+        $isAddressUsed = Order::where('id_address', $address->id)->exists();
     
-        // Actualizar la dirección con los datos validados
-        $address->update($validatedData);
+        if ($isAddressUsed) {
+            // Crear una nueva dirección con los datos actualizados
+            $newAddress = Address::create(array_merge($validatedData, ['id_user' => auth()->id()]));
     
-        // Redirigir con un mensaje de éxito
+            // Desvincular la dirección antigua del usuario
+            $address->update(['id_user' => null]);
+        } else {
+            // Si no está vinculada a pedidos, actualizar la dirección existente
+            $address->update($validatedData);
+        }
+    
         return redirect()->route('addresses.index')->with('success', 'Dirección actualizada correctamente.');
-    }    
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -144,17 +150,25 @@ class AddressController extends Controller
     public function destroy(Address $address)
     {
         // Verificar que la dirección pertenezca al usuario autenticado
-        if ($address->id_user !== auth()->id()) {
+        if (!auth()->check() || $address->id_user !== auth()->id()) {
             return redirect()->route('addresses.index')->with('error', 'No tienes permiso para eliminar esta dirección.');
+        }
+
+        // Comprobar si la dirección está vinculada a algún pedido
+        $isAddressUsed = Order::where('id_address', $address->id)->exists();
+
+        if ($isAddressUsed) {
+            // Desvincular la dirección del usuario
+            $address->update(['id_user' => null]);
+        } else {
+            // Si no está vinculada a pedidos, elimina la dirección
+            $address->delete();
         }
 
         // Si la dirección eliminada era la guardada en sesión, eliminarla de la sesión
         if (session('address.id') == $address->id) {
             session()->forget('address');
         }
-
-        // Eliminar la dirección
-        $address->delete();
 
         return redirect()->route('addresses.index')->with('success', 'Dirección eliminada correctamente.');
     }

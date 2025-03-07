@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('pais', 100); // País
             $table->string('codigo_postal', 10); // Código postal
             $table->boolean('primaria')->default(false); // Si es la dirección principal de un usuario o no
-            $table->foreignId('id_user')->constrained('users')->onDelete('cascade')->nullable(); // Clave foránea a users (id_user)
+            $table->foreignId('id_user')->nullable()->constrained('users')->onDelete('cascade')->nullable(); // Clave foránea a users (id_user)
             $table->timestamps();
         });
     }
