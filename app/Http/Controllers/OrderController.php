@@ -96,9 +96,9 @@ class OrderController extends Controller
             $order = new Order();
             $order->id_address = $address->id; // Asignar la dirección obtenida o creada
             $order->fecha = now();
+
             // Convertir el precio total a formato numérico correcto
             $order->precio_total = floatval(str_replace(',', '', $request->precio_total));
-
 
             // Si el usuario está autenticado, guardar su ID en el pedido
             if (Auth::check()) {
@@ -123,8 +123,9 @@ class OrderController extends Controller
             // Sincronizar la tabla order_items
             $order->items()->sync($orderItems);
 
-            // Vaciar el carrito después de procesar el pedido
+            // Vaciar la sesión después de procesar el pedido
             session()->forget('cart');
+            session()->forget('address');
 
             DB::commit(); // Confirmar la transacción
             return redirect()->route('home')->with('success', 'Pedido actualizado correctamente.');
