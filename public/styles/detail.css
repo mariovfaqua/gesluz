@@ -1,0 +1,10 @@
+.stock_text {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.8rem;
+}
+
+.stock_text > * {
+    font-size: 0.8rem;
+}

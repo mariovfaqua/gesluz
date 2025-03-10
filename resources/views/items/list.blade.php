@@ -19,11 +19,11 @@
                         <h5 class="card-title">{{ $item->precio }}€</h5>
                         <p class="card-text">{{ $item->nombre }}</p>
                         <p class="stock_text">
-                            <span class="material-symbols-outlined">
+                            <span class="material-symbols-outlined {{ $item->stock > 0 ? '' : 'text-danger' }}">
                                 {{ $item->stock > 0 ? 'check_circle' : 'cancel' }}
                             </span>
 
-                            <span>{{ $item->stock > 0 ? 'En stock' : 'Agotado' }}</span>
+                            <span class="{{ $item->stock > 0 ? '' : 'text-danger' }}">{{ $item->stock > 0 ? 'En stock' : 'Agotado' }}</span>
                         </p>
                     </div>
                 </a>

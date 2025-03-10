@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('styles')
-    <!-- <link rel="stylesheet" href="{{ asset('styles/list.css') }}"> -->
+    <link rel="stylesheet" href="{{ asset('styles/detail.css') }}">
 @endsection
 
 @section('content')
@@ -80,7 +80,15 @@
 
                     <!-- Agregar al carrito -->
                     <input type="hidden" name="id_item" value="{{ $item->id }}">
-                    <button type="submit" class="mt-3 btn btn-dark w-100">Agregar al carrito</button>
+                    <button type="submit" class="mt-3 btn btn-dark w-100" {{ $item->stock < 1 ? 'disabled' : '' }}>Agregar al carrito</button>
+                    @if( $item->stock < 1)
+                        <p class="stock_text">
+                            <span class="material-symbols-outlined text-danger">
+                                warning
+                            </span>
+                            <span class="text-danger">El artículo no está disponible en este momento</span>
+                        </p>
+                    @endif
                 </form>
 
 
