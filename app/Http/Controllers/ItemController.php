@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Order_Item;
 use App\Models\Tag;
 use App\Models\Image;
 use App\Http\Controllers\Controller;
@@ -12,7 +13,7 @@ use Illuminate\Support\Str;
 class ItemController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar listado de artículos.
      */
     public function index(Request $request)
     {
@@ -31,12 +32,12 @@ class ItemController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar formulario para creación de artículos.
      */
     public function create()
     {
-        if (auth()->user()->role !== 'admin') {
-            // Si el usuario no es admin, redirigir con un mensaje de error
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (auth()->check() && auth()->user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
@@ -44,23 +45,30 @@ class ItemController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar nuevo artículo en la base de datos.
      */
     public function store(Request $request)
     {
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (auth()->check() && auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
         // Validación de los datos del formulario
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string',
-            'precio' => 'required|numeric|min:0',
-            'distribucion' => 'required|string',
-            'material' => 'required|string',
+            'precio' => 'required|numeric|min:0|max:99999.99',
+            'distribucion'  => 'required|in:salón,dormitorio,cocina,baño,jardín,otros',
+            'material' => 'required|string|max:50',
             'stock' => 'required|integer|min:0',
             'id_brand' => 'nullable|exists:brands,id',
+
+            // Tags
             'tags' => 'array', // Tags existentes
             'tags.*' => 'exists:tags,id', // Asegurar que sean tags válidos
             'newTags' => 'array', // Nuevos tags (si los hay)
-            'newTags.*' => 'string|max:255',
+            'newTags.*' => 'string|max:50',
         ]);
 
         // Crear el nuevo item
@@ -83,7 +91,7 @@ class ItemController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar el detalle de un artículo.
      */
     public function show($id)
     {
@@ -93,11 +101,12 @@ class ItemController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostrar formulario para editar artículos.
      */
     public function edit(Item $item)
     {
-        if (auth()->user()->role !== 'admin') {
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (auth()->check() && auth()->user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
     
@@ -107,26 +116,30 @@ class ItemController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar artículo en la base de datos.
      */
     public function update(Request $request, Item $item)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('home')->with('error', 'No tienes permiso para realizar esta acción.');
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (auth()->check() && auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
+        // Validación de los datos del formulario
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string',
-            'precio' => 'required|numeric|min:0',
-            'distribucion' => 'required|string',
-            'material' => 'required|string',
+            'precio' => 'required|numeric|min:0|max:99999.99',
+            'distribucion'  => 'required|in:salón,dormitorio,cocina,baño,jardín,otros',
+            'material' => 'required|string|max:50',
             'stock' => 'required|integer|min:0',
             'id_brand' => 'nullable|exists:brands,id',
-            'tags' => 'array',
-            'tags.*' => 'exists:tags,id',
+
+            // Tags
+            'tags' => 'array', // Tags existentes
+            'tags.*' => 'exists:tags,id', // Asegurar que sean tags válidos
             'newTags' => 'array', // Nuevos tags (si los hay)
-            'newTags.*' => 'string|max:255',
+            'newTags.*' => 'string|max:50',
         ]);
 
         // Actualizar los datos del item
@@ -149,12 +162,18 @@ class ItemController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar artículo de la base de datos.
      */
     public function destroy(Item $item)
     {
-        if (auth()->user()->role !== 'admin') {
-            return redirect()->route('home')->with('error', 'No tienes permiso para realizar esta acción.');
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (auth()->check() && auth()->user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
+        // Si el artículo ya está asociado a un pedido, no se permite eliminarlo
+        if (Order_Item::where('id_item', $item->id)->exists()) {
+            return redirect()->route('items.adminList')->with('error', 'No se puede eliminar este item porque está asociado a pedidos anteriores.');
         }
     
         try {
@@ -175,6 +194,9 @@ class ItemController extends Controller
         }
     }
 
+    /**
+     * Aplicar tags de acceso rápido.
+     */
     public function quickLink($type, $value)
     {
         switch ($type) {
@@ -202,15 +224,22 @@ class ItemController extends Controller
         return view('items.list', ['items' => $items]);
     }
 
+    /**
+     * Mostrar listado de artículos como administrador.
+     */
     public function getAdminList(){
-        if (auth()->user()->role !== 'admin') {
-            // Si el usuario no es admin, redirigir con un mensaje de error
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (auth()->check() && auth()->user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
         $items = Item::all();
         return view('items.adminList')->with(['items'=>$items]);
     }
+
+    /**
+     * --- Otras funciones ---
+     */
 
     public function filterByForm($query, $form)
     {
