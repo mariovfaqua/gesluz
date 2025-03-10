@@ -10,6 +10,9 @@ use App\Models\Address;
 
 class CartController extends Controller
 {
+    /**
+     * Mostrar artículos en el carrito.
+     */
     public function index()
     {
         // Obtener el carrito desde la sesión
@@ -45,13 +48,15 @@ class CartController extends Controller
         return view('cart')->with(['items'=>$items, 'addresses'=>$addresses]);
     }
 
-    // Agregar producto al carrito
+    /**
+     * Agregar un producto al carrito
+     */
     public function add(Request $request)
     {
         $item = Item::find($request->id_item);
 
-        if (!$item) {
-            return back()->with('error', 'Producto no encontrado');
+        if (!$item || $item->stock < $request->cantidad) {
+            return back()->with('error', 'No se pudo completar la solicitud');
         }
 
         // Obtener el carrito actual desde la sesión
@@ -61,7 +66,7 @@ class CartController extends Controller
         if (isset($cart[$item->id])) {
             $cart[$item->id]['cantidad'] + $request->cantidad;
         } else {
-            // Si el producto no está en el carrito, lo agregamos
+            // Si el producto no está en el carrito, lo agrega
             $cart[$item->id] = [
                 'item' => $item,
                 'cantidad' => $request->cantidad
@@ -74,7 +79,9 @@ class CartController extends Controller
         return back()->with('success', 'Producto agregado al carrito');
     }
 
-    // Eliminar producto del carrito
+    /**
+     * Eliminar producto del carrito
+     */
     public function remove($id)
     {
         $cart = session()->get('cart', []);
@@ -88,14 +95,18 @@ class CartController extends Controller
         return back()->with('error', 'Producto no encontrado');
     }
 
-    // Limpiar carrito
+    /**
+     * Vaciar el carrito
+     */
     public function clear()
     {
         session()->forget('cart');
         return back()->with('success', 'Carrito vacío');
     }
 
-    // Guardar la dirección
+    /**
+     * Guardar la dirección en la sesión actual
+     */
     public function storeAddress(Request $request)
     {
         if ($request->has('selected_address')) {
@@ -109,9 +120,9 @@ class CartController extends Controller
                 'linea_1'       => 'required|string|max:255',
                 'linea_2'       => 'nullable|string|max:255',
                 'pais'          => 'required|string|max:100',
-                'provincia'     => 'required|string|max:100',
-                'ciudad'        => 'required|string|max:100',
-                'codigo_postal' => 'required|string|max:20',
+                'provincia'     => 'required|string|max:50',
+                'ciudad'        => 'required|string|max:50',
+                'codigo_postal' => 'required|string|max:10', 
             ]);
 
             // Guardar en la sesión la nueva dirección ingresada
@@ -121,6 +132,9 @@ class CartController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Eliminar la dirección de la sesión actual
+     */
     public function clearAddress(Request $request)
     {
         session()->forget('address');
