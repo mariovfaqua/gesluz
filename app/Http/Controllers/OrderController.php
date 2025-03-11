@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Address;
 use App\Models\Item;
+use App\Models\Order_Item;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -13,12 +14,12 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar listado de los pedidos asociados a un usuario.
      */
     public function index()
     {
-        if (!auth()->user()) {
-            // Si el usuario no es admin, redirigir con un mensaje de error
+        // SI el usuario no está autenticado, redirigir con un mensaje de error
+        if (!auth()->check()) {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
@@ -36,15 +37,15 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Función 'create' sin usar.
      */
     public function create()
     {
-        //
+        return back();
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar un nuevo pedido en la base de datos.
      */
     public function store(Request $request)
     {
@@ -58,7 +59,6 @@ class OrderController extends Controller
         }
 
         DB::beginTransaction(); // Iniciar transacción
-
         try{
             // Buscar si la dirección ya existe en la base de datos
             $address = Address::where('nombre', $addressData['nombre'])
@@ -101,18 +101,17 @@ class OrderController extends Controller
             $order->precio_total = floatval(str_replace(',', '', $request->precio_total));
 
             // Si el usuario está autenticado, guardar su ID en el pedido
-            if (Auth::check()) {
-                $order->id_user = Auth::id();
+            if (auth()->check()) {
+                $order->id_user = auth()->id();
             }
 
             $order->save();
 
-            // Actualizar el stock de los items según el carrito
+            // Actualizar la tabla order_items
             $orderItems = [];
             foreach ($cart as $cartItem) {
                 $item = $cartItem['item'];
                 if ($item instanceof \App\Models\Item) { // Verificar que realmente es una instancia de Item
-                    $item->stock -= $cartItem['cantidad'];
                     $item->save();
 
                     // Añadir al array de sincronización
@@ -191,6 +190,20 @@ class OrderController extends Controller
             // Establecer el estatus del pedido como completado
             $order->estatus = true;
             $order->save();
+
+            // Recuperar items del pedido
+            $orderItems = Order_Item::where('id_order', $order->id)->get();
+
+            // Recorrer los order_items y actualizar el stock de los items relacionados
+            foreach ($orderItems as $orderItem) {
+                $item = Item::find($orderItem->id_item);
+
+                if ($item) {
+                    // Restar la cantidad del stock
+                    $item->stock -= $orderItem->cantidad;
+                    $item->save();
+                }
+            }
     
             return redirect()->back()->with('success', 'Pedido actualizado correctamente.');
         } catch (\Exception $e) {
@@ -208,8 +221,8 @@ class OrderController extends Controller
         }
 
         try {
-            // Eliminar las relaciones con items en order_items
-            $order->items()->detach();
+            // Eliminar todos los registros en order_items donde id_order coincida
+            Order_Item::where('id_order', $order->id)->delete();
 
             // Eliminar el pedido
             $order->delete();

@@ -97,6 +97,16 @@ class ItemController extends Controller
     {
         $item = Item::with(['images', 'tags'])->findOrFail($id);
 
+        // Obtener la cantidad total reservada en pedidos pendientes
+        $cantidadReservada = Order_Item::where('id_item', $id)
+        ->whereHas('order', function ($query) {
+            $query->where('estatus', false); // Filtrar solo los pedidos pendientes
+        })
+        ->sum('cantidad'); // Sumar la cantidad reservada en esos pedidos
+
+        // Restar la cantidad reservada del stock
+        $item->stock -= $cantidadReservada;
+
         return view('items.detail')->with(['item'=>$item,]);
     }
 
