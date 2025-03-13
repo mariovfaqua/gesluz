@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container mt-4">
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -34,7 +39,7 @@
                         </td>
                         <td>
                             <a href="{{ route('orders.show', $order->id) }}" class="btn btn-info btn-sm">Ver</a>
-                            @if(Request::is('orders/adminList'))
+                            @if(auth()->check() && auth()->user()->role === 'admin')
                                 <form action="{{ route('orders.update', $order) }}" method="POST" class="d-inline">
                                     @method('PUT')
                                     @csrf

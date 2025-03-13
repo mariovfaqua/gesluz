@@ -16,7 +16,7 @@
                 <strong>Fecha:</strong> {{ $order->fecha }}<br>
                 <strong>Total:</strong> {{ $order->precio_total }}<br>
             </div>
-            <a href="{{ route('orders.index') }}" class="btn btn-info btn-sm w-25">Volver</a>
+            <a href="{{ url()->previous() }}" class="btn btn-info btn-sm w-25">Volver</a>
         </div>
         <div class="col-md-5 p-3 border rounded">
             <strong class="fw-bold">Dirección de envío</strong>

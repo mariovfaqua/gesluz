@@ -18,7 +18,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        // SI el usuario no está autenticado, redirigir con un mensaje de error
+        // Si el usuario no está autenticado, redirigir con un mensaje de error
         if (!auth()->check()) {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
@@ -136,22 +136,17 @@ class OrderController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar el detalle de un pedido.
      */
     public function show($id)
     {
-        if (!auth()->check()) {
-            // Si el usuario no está autenticado, redirigir con un mensaje de error
+        // Verificar si el usuario es admin o si el pedido le pertenece
+        if (!auth()->check() || (auth()->user()->role !== 'admin' && $order->id_user !== auth()->id())) {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
         // Recuperar el pedido por ID junto con la dirección
         $order = Order::with('address')->findOrFail($id);
-
-        // Verificar si el usuario es admin o si el pedido le pertenece
-        if (auth()->user()->role !== 'admin' && $order->id_user !== auth()->user()->id) {
-            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
-        }
 
         // Recuperar los id_item y cantidades de la tabla order_items
         $cantidades = DB::table('order_items')
@@ -170,19 +165,19 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Función 'edit' sin usar.
      */
     public function edit(ORder $oRder)
     {
-        //
+        return back();
     }
 
     /**
-     * Update the specified resource in storage.
+     * Marcar un pedido como 'completado' y actualizar stock de los items.
      */
     public function update(Order $order)
     {
-        if (!auth()->user() || auth()->user()->role !== 'admin') {
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
     
@@ -212,11 +207,12 @@ class OrderController extends Controller
     }    
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar el pedido de la base de datos.
      */
     public function destroy(Order $order)
     {
-        if (auth()->user()->role !== 'admin') {
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'No tienes permiso para realizar esta acción.');
         }
 
@@ -227,25 +223,41 @@ class OrderController extends Controller
             // Eliminar el pedido
             $order->delete();
 
-            return redirect()->route('orders.index')->with('success', 'Pedido eliminado correctamente.');
+            // Recuperar listado de pedidos antes de redirigir
+            $pendientes = Order::where('estatus', 0)
+            ->orderBy('fecha', 'desc')
+            ->get();
+
+            $completados = Order::where('estatus', 1)
+                ->orderBy('fecha', 'desc')
+                ->paginate(20);
+
+            session()->flash('success', 'Pedido eliminado correctamente.');
+            return redirect()->route('orders.adminList')->with(['pendientes' => $pendientes, 'completados' => $completados]);           
         } catch (\Exception $e) {
-            return redirect()->route('orders.index')->with('error', 'Hubo un problema al eliminar el pedido.');
+            session()->flash('error', 'Hubo un problema al eliminar el pedido.');
+            return redirect()->route('orders.adminList')->with(['pendientes' => $pendientes, 'completados' => $completados]);   
         }
     }
 
+
+    /**
+     * Mostrar listado de pedidos como administrador.
+     */
     public function getAdminList(){
-        if (!auth()->check() && auth()->user()->role !== 'admin') {
-            // Si el usuario no es admin, redirigir con un mensaje de error
+
+        // Si el usuario no es admin, redirigir con un mensaje de error
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
         $pendientes = Order::where('estatus', 0)
-        ->orderBy('fecha', 'desc')
-        ->get();
+            ->orderBy('fecha', 'desc')
+            ->get();
 
         $completados = Order::where('estatus', 1)
-        ->orderBy('fecha', 'desc')
-        ->paginate(20);
+            ->orderBy('fecha', 'desc')
+            ->paginate(20);
 
         return view('orders.list')->with(['pendientes'=>$pendientes, 'completados'=>$completados]);
     }
