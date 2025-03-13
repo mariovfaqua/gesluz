@@ -10,24 +10,26 @@ use Illuminate\Http\Request;
 class AddressController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar listado de las direcciones asociadas a un usuario.
      */
     public function index()
     {
+        // Verificar si el usuario está autenticado
         if (!auth()->check()) {
             return redirect()->route('inicio')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
-        $addresses = Address::where('id_user', auth()->user()->id)->get();
+        $addresses = Address::where('id_user', auth()->id)->get();
 
         return view('addresses.list')->with(['addresses'=>$addresses]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar formulario para creación de direcciones.
      */
     public function create()
     {
+        // Verificar si el usuario está autenticado
         if (!auth()->check()) {
             return redirect()->route('inicio')->with('error', 'No tienes permiso para acceder a esta página.');
         }
@@ -36,7 +38,7 @@ class AddressController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guardar nueva dirección en la base de datos.
      */
     public function store(Request $request)
     {
@@ -51,9 +53,9 @@ class AddressController extends Controller
             'linea_1'       => 'required|string|max:255',
             'linea_2'       => 'nullable|string|max:255',
             'pais'          => 'required|string|max:100',
-            'provincia'     => 'required|string|max:100',
-            'ciudad'        => 'required|string|max:100',
-            'codigo_postal' => 'required|string|max:20',
+            'provincia'     => 'required|string|max:50',
+            'ciudad'        => 'required|string|max:50',
+            'codigo_postal' => 'required|string|max:10',
         ]);
 
         // COmprobar si el usuario ya tiene la dirección guardada
@@ -85,15 +87,15 @@ class AddressController extends Controller
     }    
 
     /**
-     * Display the specified resource.
+     * Función 'show' sin usar.
      */
     public function show(Address $address)
     {
-        //
+        return back();
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Mostrar formulario para editar direcciones.
      */
     public function edit(Address $address)
     {
@@ -107,7 +109,7 @@ class AddressController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar dirección en la base de datos.
      */
     public function update(Request $request, Address $address)
     {
@@ -122,9 +124,9 @@ class AddressController extends Controller
             'linea_1' => 'required|string|max:255',
             'linea_2' => 'nullable|string|max:255',
             'pais' => 'required|string|max:100',
-            'provincia' => 'required|string|max:100',
-            'ciudad' => 'required|string|max:100',
-            'codigo_postal' => 'required|string|max:20',
+            'provincia' => 'required|string|max:50',
+            'ciudad' => 'required|string|max:50',
+            'codigo_postal' => 'required|string|max:10',
         ]);
 
         // Comprobar si la dirección está vinculada a algún pedido
@@ -145,7 +147,7 @@ class AddressController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar la dirección de la base de datos.
      */
     public function destroy(Address $address)
     {
@@ -173,7 +175,9 @@ class AddressController extends Controller
         return redirect()->route('addresses.index')->with('success', 'Dirección eliminada correctamente.');
     }
 
-
+    /**
+     * Establecer la dirección como primaria.
+     */
     public function setPrimary($id)
     {
         if (!auth()->check()) {
