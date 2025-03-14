@@ -71,3 +71,7 @@
     </div>
 </div>
 @endsection
+
+<script>
+    window.location.href = "{{ route('inicio') }}";
+</script>
