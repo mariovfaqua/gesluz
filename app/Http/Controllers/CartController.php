@@ -32,7 +32,7 @@ class CartController extends Controller
         // Recuperar todas las direcciones del usuario autenticado
         $addresses = [];
         if (auth()->check()) {
-            $addresses = Address::where('id_user', auth()->user()->id)->get();
+            $addresses = Address::where('id_user', auth()->id())->get();
 
             // Intentar guardar la dirección primaria en la sesión
             if (!session()->has('address')) {
@@ -49,7 +49,7 @@ class CartController extends Controller
     }
 
     /**
-     * Agregar un producto al carrito
+     * Agregar un producto al carrito.
      */
     public function add(Request $request)
     {
@@ -64,7 +64,7 @@ class CartController extends Controller
 
         // Si el producto ya está en el carrito, incrementa la cantidad
         if (isset($cart[$item->id])) {
-            $cart[$item->id]['cantidad'] + $request->cantidad;
+            $cart[$item->id]['cantidad'] += $request->cantidad;
         } else {
             // Si el producto no está en el carrito, lo agrega
             $cart[$item->id] = [
@@ -80,7 +80,7 @@ class CartController extends Controller
     }
 
     /**
-     * Eliminar producto del carrito
+     * Eliminar producto del carrito.
      */
     public function remove($id)
     {
@@ -96,7 +96,7 @@ class CartController extends Controller
     }
 
     /**
-     * Vaciar el carrito
+     * Vaciar el carrito.
      */
     public function clear()
     {
@@ -105,7 +105,7 @@ class CartController extends Controller
     }
 
     /**
-     * Guardar la dirección en la sesión actual
+     * Guardar la dirección en la sesión actual.
      */
     public function storeAddress(Request $request)
     {
@@ -133,7 +133,7 @@ class CartController extends Controller
     }
 
     /**
-     * Eliminar la dirección de la sesión actual
+     * Eliminar la dirección de la sesión actual.
      */
     public function clearAddress(Request $request)
     {

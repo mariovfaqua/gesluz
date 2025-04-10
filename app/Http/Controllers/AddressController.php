@@ -19,7 +19,7 @@ class AddressController extends Controller
             return redirect()->route('inicio')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
-        $addresses = Address::where('id_user', auth()->id)->get();
+        $addresses = Address::where('id_user', auth()->id())->get();
 
         return view('addresses.list')->with(['addresses'=>$addresses]);
     }

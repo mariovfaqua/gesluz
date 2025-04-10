@@ -22,7 +22,7 @@ class AddressFactory extends Factory
             'ciudad' => $this->faker->city(),
             'pais' => $this->faker->country(),
             'codigo_postal' => $this->faker->postcode(),
-            'primaria' => $this->faker->boolean(), // Dirección primaria (true/false)
+            'primaria' => false, // Dirección primaria (false)
             'id_user' => $user ? $user->id : null, // Comprobar que id_user sea válido o nulo si no hay usuarios
         ];
     }

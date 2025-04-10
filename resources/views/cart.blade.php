@@ -5,6 +5,13 @@
     <div class="row">
         <!-- Sección izquierda: Tabla de productos -->
         <div class="col-md-7">
+
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <h4>Mi carrito de compra</h4>
 
             @if(count($items) > 0)

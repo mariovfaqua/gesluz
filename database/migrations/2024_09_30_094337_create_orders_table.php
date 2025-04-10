@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamp('fecha'); // Fecha del pedido
             $table->float('precio_total', 8, 2)->unsigned(); // Precio total del pedido
             $table->boolean('estatus')->default(false); // Estatus del pedido (0 = no entregado, 1 = entregado)
-            $table->foreignId('id_user')->constrained('users')->onDelete('cascade')->nullable(); // Clave foránea a users (id_user)
+            $table->foreignId('id_user')->nullable()->constrained('users')->onDelete('cascade')->nullable(); // Clave foránea a users (id_user)
             $table->timestamps();
         });
     }

@@ -313,7 +313,7 @@
                 <a class="nav-link text-white" href="#">Marcas</a>
             </li> -->
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Ofertas</a>
+                <a class="nav-link text-white" href="{{ route('items.quickLink', ['type' => 'tag', 'value' => 'ofertas']) }}">Ofertas</a>
             </li>
         </ul>
     </header>

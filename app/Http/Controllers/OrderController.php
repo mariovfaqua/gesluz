@@ -53,9 +53,9 @@ class OrderController extends Controller
         $cart = session()->get('cart', []);
         $addressData = session()->get('address', []);
 
-        // Verificar si hay datos de dirección en la sesión
-        if (!$addressData) {
-            return back()->with('error', 'No se ha especificado una dirección.');
+        // Verificar si hay datos de sesión
+        if (!$addressData || !$cart) {
+            return back()->with('error', 'No se ha podido completar la operación.');
         }
 
         DB::beginTransaction(); // Iniciar transacción
@@ -112,7 +112,6 @@ class OrderController extends Controller
             foreach ($cart as $cartItem) {
                 $item = $cartItem['item'];
                 if ($item instanceof \App\Models\Item) { // Verificar que realmente es una instancia de Item
-                    $item->save();
 
                     // Añadir al array de sincronización
                     $orderItems[$item->id] = ['cantidad' => $cartItem['cantidad']];

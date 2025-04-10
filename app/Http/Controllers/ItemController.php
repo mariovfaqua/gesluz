@@ -27,6 +27,10 @@ class ItemController extends Controller
 
         // Obtener los items filtrados con paginación
         $items = $items->paginate(40);
+
+        if ($request->ajax()) {
+            return view('items.partials.resultados', compact('items'))->render();
+        }
         
         return view('items.list')->with(['items'=>$items]);
     }
@@ -225,6 +229,8 @@ class ItemController extends Controller
 
                 if ($tag) {
                     $items = $tag->items()->paginate(40);
+                } else {
+                    return redirect()->route('items.index');
                 }
                 break;
             default:
@@ -253,29 +259,36 @@ class ItemController extends Controller
 
     public function filterByForm($query, $form)
     {
+        $appliedFilters = [];
+
         // Filtrar por texto
         if (!empty($form['query'])) {
             $query->where('nombre', 'like', '%' . $form['query'] . '%');
+            $appliedFilters['query'] = $form['query'];
         }
 
         // Filtrar por precio mínimo
         if (!empty($form['minValue'])) {
             $query->where('precio', '>=', $form['minValue']);
+            $appliedFilters['minValue'] = $form['minValue'];
         }
 
         // Filtrar por precio máximo
         if (!empty($form['maxValue'])) {
             $query->where('precio', '<=', $form['maxValue']);
+            $appliedFilters['maxValue'] = $form['maxValue'];
         }
 
         // Filtrar por material
         if (!empty($form['material']) && $form['material'] !== 'Ninguno') {
             $query->where('material', $form['material']);
+            $appliedFilters['material'] = $form['material'];
         }
 
         // Filtrar por marca
         if (!empty($form['brand']) && $form['brand'] !== 'Ninguno') {
             $query->where('id_brand', $form['brand']);
+            $appliedFilters['brand'] = $form['brand'];
         }
 
         // Filtrar por tags
@@ -283,12 +296,16 @@ class ItemController extends Controller
             $query->whereHas('tags', function ($tagQuery) use ($form) {
                 $tagQuery->whereIn('id', $form['tags']); 
             });
+            $appliedFilters['tags'] = $form['tags'];
         }
 
         // Filtrar por color
         // if ($form['color'] && $form['color'] !== 'Ninguno') {
         //     $items->where('color', $form['color']);
         // }
+
+        // Guardar filtros en sesión
+        session(['filters' => $appliedFilters]);
 
         return $query;
     }
