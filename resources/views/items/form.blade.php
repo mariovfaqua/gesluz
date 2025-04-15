@@ -45,15 +45,13 @@
                             </select>
                         </div>
 
-                        <!-- Material -->
+                        <!-- Tipo -->
                         <div class="mb-3">
-                            <label for="material" class="form-label">Material</label>
-                            <select class="form-select" id="material" name="material" required>
-                                <option value="" selected disabled>Selecciona un material</option>
-                                <option value="plástico" {{ ($item->material ?? null) == "plástico" ? 'selected' : '' }}>Plástico</option>
-                                <option value="metal" {{ ($item->material ?? null) == "metal" ? 'selected' : '' }}>Metal</option>
-                                <option value="madera" {{ ($item->material ?? null) == "madera" ? 'selected' : '' }}>Madera</option>
-                                <option value="vidrio" {{ ($item->material ?? null) == "vidrio" ? 'selected' : '' }}>Vidrio</option>
+                            <label for="tipo" class="form-label">Tipo</label>
+                            <select class="form-select" id="tipo" name="tipo" required>
+                                @foreach(App\Models\Item::getTipos() as $tipo)
+                                    <option value="{{ $tipo }}" {{ ($item->tipo ?? '') == $tipo ? 'selected' : '' }}>{{ $tipo }}</option>
+                                @endforeach
                             </select>
                         </div>
 

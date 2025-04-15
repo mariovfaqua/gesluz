@@ -14,8 +14,9 @@ class Item extends Model
         'descripcion',
         'precio',
         'distribucion',
-        'material',
-        // 'color',
+        'tipo',
+        'alto',
+        'ancho',
         'stock',
         'id_brand',
     ];
@@ -36,5 +37,11 @@ class Item extends Model
     public function images()
     {
         return $this->hasMany(Image::class, 'id_item');
+    }
+
+    // Devuelve un listado con los tipos que coincide con la migración
+    public static function getTipos()
+    {
+        return ['Plafón', 'Sobremesa', 'Auxiliar', 'Colgante', 'Empotrada', 'De pie', 'Foco', 'Tira led', 'Otro'];
     }
 }

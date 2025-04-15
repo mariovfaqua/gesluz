@@ -25,13 +25,12 @@
                         <input type="number" step="0.01" name="form[maxValue]" value="{{ session('filters.maxValue') ?? '' }}" class="form-control" style="width: 80px;" placeholder="Máx €">
                     </div>
 
-                    <!-- Filtro de material -->
-                    <select name="form[material]" class="form-select form-select-sm w-auto">
-                        <option value="Ninguno" {{ session('filters.material') === 'Ninguno' ? 'selected' : '' }}>Material</option>
-                        <option value="Plástico" {{ session('filters.material') === 'Plástico' ? 'selected' : '' }}>Plástico</option>
-                        <option value="Metal" {{ session('filters.material') === 'Metal' ? 'selected' : '' }}>Metal</option>
-                        <option value="Madera" {{ session('filters.material') === 'Madera' ? 'selected' : '' }}>Madera</option>
-                        <option value="Vidrio" {{ session('filters.material') === 'Vidrio' ? 'selected' : '' }}>Vidrio</option>
+                    <!-- Filtro de tipo -->
+                    <select name="form[tipo]" class="form-select form-select-sm w-auto">
+                        <option selected>Ninguno</option>
+                        @foreach(App\Models\Item::getTipos() as $tipo)
+                            <option>{{ $tipo }}</option>
+                        @endforeach
                     </select>
 
                     <!-- Filtro de marca -->

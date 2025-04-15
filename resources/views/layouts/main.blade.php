@@ -67,8 +67,8 @@
                         </div>
                     </div>
 
-                    <!-- Material -->
-                    <div class="accordion" id="materialAccordion">
+                    <!-- Tipo -->
+                    <div class="accordion" id="tipoAccordion">
                         <div class="accordion-item border-0">
                             <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
@@ -78,43 +78,15 @@
                                     aria-expanded="false" 
                                     aria-controls="collapseTwo">
                                     
-                                    Material
+                                    Tipo
                                 </button>
                             </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#materialAccordion">
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#tipoAccordion">
                                 <div class="accordion-body px-1 py-2">
-                                    <select class="form-select" id="form[material]" name="form[material]">
+                                    <select class="form-select" id="form[tipo]" name="form[tipo]">
                                         <option selected>Ninguno</option>
-                                        <option>Plástico</option>
-                                        <option>Metal</option>
-                                        <option>Madera</option>
-                                        <option>Vidrio</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Marca -->
-                    <div class="accordion" id="brandAccordion">
-                        <div class="accordion-item border-0">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
-                                    type="button" 
-                                    data-bs-toggle="collapse" 
-                                    data-bs-target="#collapseThree" 
-                                    aria-expanded="false" 
-                                    aria-controls="collapseThree">
-                                    
-                                    Marca
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#brandAccordion">
-                                <div class="accordion-body px-1 py-2">
-                                    <select class="form-select" id="form[brand]" name="form[brand]">
-                                        <option selected>Ninguno</option>
-                                        @foreach($brands as $brand)
-                                            <option value="{{ $brand->id }}">{{ $brand->nombre }}</option>
+                                        @foreach(App\Models\Item::getTipos() as $tipo)
+                                            <option>{{ $tipo }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -154,32 +126,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Color -->
-                    <!-- <div class="accordion" id="colorAccordion">
-                        <div class="accordion-item border-0">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
-                                    type="button" 
-                                    data-bs-toggle="collapse" 
-                                    data-bs-target="#collapseFour" 
-                                    aria-expanded="false" 
-                                    aria-controls="collapseFour">
-                                    
-                                    Color
-                                </button>
-                            </h2>
-                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#colorAccordion">
-                                <div class="accordion-body px-1 py-2">
-                                    <select class="form-select" id="form[color]" name="form[color]">
-                                        <option selected>Ninguno</option>
-                                        <option value="1">Opción 1</option>
-                                        <option value="2">Opción 2</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                     
                 </div>
             </form>

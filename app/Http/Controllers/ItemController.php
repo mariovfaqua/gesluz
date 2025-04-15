@@ -64,7 +64,7 @@ class ItemController extends Controller
             'descripcion' => 'required|string',
             'precio' => 'required|numeric|min:0|max:99999.99',
             'distribucion'  => 'required|in:salón,dormitorio,cocina,baño,jardín,otros',
-            'material' => 'required|string|max:50',
+            'tipo' => 'required|string|max:50',
             'stock' => 'required|integer|min:0',
             'id_brand' => 'nullable|exists:brands,id',
 
@@ -81,7 +81,7 @@ class ItemController extends Controller
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
             'distribucion' => $request->distribucion,
-            'material' => $request->material,
+            'tipo' => $request->tipo,
             'stock' => $request->stock,
             'id_brand' => $request->id_brand,
         ]);
@@ -145,7 +145,7 @@ class ItemController extends Controller
             'descripcion' => 'required|string',
             'precio' => 'required|numeric|min:0|max:99999.99',
             'distribucion'  => 'required|in:salón,dormitorio,cocina,baño,jardín,otros',
-            'material' => 'required|string|max:50',
+            'tipo' => 'required|string|max:50',
             'stock' => 'required|integer|min:0',
             'id_brand' => 'nullable|exists:brands,id',
 
@@ -162,7 +162,7 @@ class ItemController extends Controller
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
             'distribucion' => $request->distribucion,
-            'material' => $request->material,
+            'tipo' => $request->tipo,
             'stock' => $request->stock,
             'id_brand' => $request->id_brand,
         ]);
@@ -279,10 +279,10 @@ class ItemController extends Controller
             $appliedFilters['maxValue'] = $form['maxValue'];
         }
 
-        // Filtrar por material
-        if (!empty($form['material']) && $form['material'] !== 'Ninguno') {
-            $query->where('material', $form['material']);
-            $appliedFilters['material'] = $form['material'];
+        // Filtrar por tipo
+        if (!empty($form['tipo']) && $form['tipo'] !== 'Ninguno') {
+            $query->where('tipo', $form['tipo']);
+            $appliedFilters['tipo'] = $form['tipo'];
         }
 
         // Filtrar por marca
