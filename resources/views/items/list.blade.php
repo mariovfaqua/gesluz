@@ -8,61 +8,58 @@
     <div class="container mt-5">
         <h4 class="search_title">Resultados de la búsqueda</h4>
 
-        <form action="{{ route('items.index') }}" method="GET" class="bg-light border rounded p-3 mb-4 shadow-sm">
+        <form id="filterForm" action="{{ route('items.index') }}" method="GET">
             <div class="d-flex flex-wrap align-items-center justify-content-between">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2 mb-md-0">
 
                     <strong class="me-2">Filtros aplicados:</strong>
 
-                    @if(session('filters.query'))
-                        <div class="input-group input-group-sm w-auto">
-                            <input type="text" name="form[query]" value="{{ session('filters.query') }}" class="form-control" placeholder="Buscar...">
-                        </div>
-                    @endif
+                    <!-- Filtro de búsqueda por nombre (si hay filtro, lo muestra) -->
+                    <div class="input-group input-group-sm w-auto">
+                        <input type="text" name="form[query]" value="{{ session('filters.query') ?? '' }}" class="form-control" placeholder="Buscar..." {{ session('filters.query') ? 'value=' . session('filters.query') : '' }}>
+                    </div>
 
-                    @if(session('filters.minValue') || session('filters.maxValue'))
-                        <div class="input-group input-group-sm w-auto">
-                            <input type="number" step="0.01" name="form[minValue]" value="{{ session('filters.minValue') }}" class="form-control" style="width: 80px;" placeholder="Mín €">
-                            <input type="number" step="0.01" name="form[maxValue]" value="{{ session('filters.maxValue') }}" class="form-control" style="width: 80px;" placeholder="Máx €">
-                        </div>
-                    @endif
+                    <!-- Filtro de rango de precios -->
+                    <div class="input-group input-group-sm w-auto">
+                        <input type="number" step="0.01" name="form[minValue]" value="{{ session('filters.minValue') ?? '' }}" class="form-control" style="width: 80px;" placeholder="Mín €">
+                        <input type="number" step="0.01" name="form[maxValue]" value="{{ session('filters.maxValue') ?? '' }}" class="form-control" style="width: 80px;" placeholder="Máx €">
+                    </div>
 
-                    @if(session('filters.material') && session('filters.material') !== 'Ninguno')
-                        <select name="form[material]" class="form-select form-select-sm w-auto">
-                            <option value="Ninguno">Material</option>
-                            <option {{ session('filters.material') === 'Plástico' ? 'selected' : '' }}>Plástico</option>
-                            <option {{ session('filters.material') === 'Metal' ? 'selected' : '' }}>Metal</option>
-                            <option {{ session('filters.material') === 'Madera' ? 'selected' : '' }}>Madera</option>
-                            <option {{ session('filters.material') === 'Vidrio' ? 'selected' : '' }}>Vidrio</option>
-                        </select>
-                    @endif
+                    <!-- Filtro de material -->
+                    <select name="form[material]" class="form-select form-select-sm w-auto">
+                        <option value="Ninguno" {{ session('filters.material') === 'Ninguno' ? 'selected' : '' }}>Material</option>
+                        <option value="Plástico" {{ session('filters.material') === 'Plástico' ? 'selected' : '' }}>Plástico</option>
+                        <option value="Metal" {{ session('filters.material') === 'Metal' ? 'selected' : '' }}>Metal</option>
+                        <option value="Madera" {{ session('filters.material') === 'Madera' ? 'selected' : '' }}>Madera</option>
+                        <option value="Vidrio" {{ session('filters.material') === 'Vidrio' ? 'selected' : '' }}>Vidrio</option>
+                    </select>
 
-                    @if(session('filters.brand') && session('filters.brand') !== 'Ninguno')
-                        <select name="form[brand]" class="form-select form-select-sm w-auto">
-                            <option value="Ninguno">Marca</option>
-                            @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}" {{ session('filters.brand') == $brand->id ? 'selected' : '' }}>
-                                    {{ $brand->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @endif
+                    <!-- Filtro de marca -->
+                    <select name="form[brand]" class="form-select form-select-sm w-auto">
+                        <option value="Ninguno">Marca</option>
+                        @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}" {{ session('filters.brand') == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
 
-                    @if(session('filters.tags'))
-                        <select name="form[tags][]" multiple class="form-select form-select-sm w-auto" style="min-width: 120px;">
-                            @foreach($tags as $tag)
-                                <option value="{{ $tag->id }}" {{ in_array($tag->id, session('filters.tags')) ? 'selected' : '' }}>
-                                    {{ $tag->nombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @endif
+                    <!-- Filtro de tags -->
+                    <select name="form[tags][]" multiple class="form-select form-select-sm w-auto" style="min-width: 120px;">
+                        @foreach($tags as $tag)
+                            <option value="{{ $tag->id }}" {{ in_array($tag->id, session('filters.tags', [])) ? 'selected' : '' }}>
+                                {{ $tag->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="d-flex gap-2">
+                    <!-- Botón para quitar los filtros -->
                     <a href="{{ route('items.index') }}" class="btn btn-outline-danger btn-sm">
                         Quitar filtros
                     </a>
+                    <!-- Botón para aplicar los filtros -->
                     <button class="btn btn-primary btn-sm" type="submit">
                         Aplicar cambios
                     </button>
@@ -111,38 +108,27 @@
 @endsection
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector("form");
-        const resultados = document.getElementById("resultados");
+    const filterForm = document.getElementById('filterForm');
 
-        function getFormParams(form) {
-            const formData = new FormData(form);
-            const params = new URLSearchParams();
+    filterForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitar que se envíe el formulario de forma tradicional
 
-            for (const [key, value] of formData.entries()) {
-                if (value !== "") {
-                    params.append(key, value);
-                }
-            }
+        // Recoger los datos del formulario
+        const formData = new FormData(filterForm);
 
-            return params.toString();
-        }
-
-        form.querySelectorAll("input, select").forEach(input => {
-            input.addEventListener("change", () => {
-                const query = getFormParams(form);
-
-                fetch("{{ route('items.index') }}?" + query, {
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
-                    }
-                })
-                .then(res => res.text())
-                .then(html => {
-                    resultados.innerHTML = html;
-                    window.history.pushState({}, "", `?${query}`);
-                });
-            });
+        // Enviar la solicitud AJAX
+        fetch('{{ route('items.index') }}', {
+            method: 'GET',
+            body: formData
+        })
+        .then(response => response.text()) // Esperar la respuesta como texto
+        .then(data => {
+            // Actualizar el contenido de los ítems en la página
+            document.getElementById('itemsContainer').innerHTML = data;
+        })
+        .catch(error => {
+            console.error('Error al actualizar los resultados:', error);
         });
     });
 </script>
+

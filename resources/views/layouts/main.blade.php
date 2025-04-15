@@ -190,9 +190,10 @@
             <div class="toggle-container" data-bs-toggle="offcanvas" data-bs-target="#sidenav" aria-controls="sidenav">
                 <span class="navbar-toggler-icon toggle-content"></span>
             </div>
-            <div>
-                <a class="title" href="{{ route('inicio') }}">GESLUZ</a>
-            </div>
+            <a class="title-container" href="{{ route('inicio') }}">
+                <span class="title" >DLG</span>
+                <span class="subtitle">DOMÓTICA, LUZ Y GESTIÓN</span>
+            </a>
             <div class="toggle-container">
                 <!-- Authentication Links -->
                 @guest
