@@ -8,7 +8,30 @@
     <div class="container mt-5">
         <h4 class="search_title">Resultados de la búsqueda</h4>
 
-        <form id="filterForm" action="{{ route('items.index') }}" method="GET">
+        <!-- Etiquetas de filtros -->
+        <div id="activeFilters" class="mb-3">
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <strong>Filtros:</strong>
+
+                @if(session('filters'))
+                    @foreach(session('filters') as $key => $value)
+                        @if(is_array($value))
+                            @foreach($value as $v)
+                                <span class="badge bg-secondary">{{ is_numeric($v) ? ($tags->firstWhere('id', $v)?->nombre ?? $v) : $v }}</span>
+                            @endforeach
+                        @else
+                            <span class="badge bg-secondary">{{ $value }}</span>
+                        @endif
+                    @endforeach
+                @endif
+
+                <!-- Botón para editar filtros -->
+                <button type="button" class="btn btn-sm btn-outline-primary ms-2" id="toggleFilters">Editar filtros</button>
+            </div>
+        </div>
+
+        <!-- Formulario de edición de filtros -->
+        <form id="filterForm" action="{{ route('items.index') }}" method="GET" style="display: none;">
             <div class="d-flex flex-wrap align-items-center justify-content-between">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2 mb-md-0">
 
@@ -105,6 +128,19 @@
         </nav> -->
     </div>
 @endsection
+
+<script>
+    const toggleButton = document.getElementById('toggleFilters');
+    const filterForm = document.getElementById('filterForm');
+    const activeFilters = document.getElementById('activeFilters');
+
+    toggleButton?.addEventListener('click', () => {
+        const isFormVisible = filterForm.style.display === 'block';
+        filterForm.style.display = isFormVisible ? 'none' : 'block';
+        activeFilters.style.display = isFormVisible ? 'flex' : 'none';
+    });
+</script>
+
 
 <script>
     const filterForm = document.getElementById('filterForm');
