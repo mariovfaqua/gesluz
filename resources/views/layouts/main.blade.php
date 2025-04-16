@@ -46,7 +46,7 @@
                     <div class="accordion" id="priceAccordion">
                         <div class="accordion-item border-0">
                             <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-sm fw-bold" 
                                     type="button" 
                                     data-bs-toggle="collapse" 
                                     data-bs-target="#collapseOne" 
@@ -71,7 +71,7 @@
                     <div class="accordion" id="tipoAccordion">
                         <div class="accordion-item border-0">
                             <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-sm fw-bold" 
                                     type="button" 
                                     data-bs-toggle="collapse" 
                                     data-bs-target="#collapseTwo" 
@@ -98,7 +98,7 @@
                     <div class="accordion" id="tagAccordion">
                         <div class="accordion-item border-0">
                             <h2 class="accordion-header" id="headingFour">
-                                <button class="accordion-button collapsed bg-transparent p-2 shadow-none fw-bold" 
+                                <button class="accordion-button collapsed bg-transparent p-2 shadow-sm fw-bold" 
                                     type="button" 
                                     data-bs-toggle="collapse" 
                                     data-bs-target="#collapseFour" 

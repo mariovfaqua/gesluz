@@ -64,10 +64,6 @@ ul li:not(:last-child) {
     gap: 0.5rem;
 }
 
-.filtros > * {
-    border-bottom: 0.1rem solid lightgray;
-}
-
 /* Footer ---------- */
 
 .contact_list {

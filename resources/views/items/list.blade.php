@@ -6,12 +6,14 @@
 
 @section('content')
     <div class="container mt-5">
-        <h4 class="search_title">Resultados de la búsqueda</h4>
+        <h4>Resultados de la búsqueda</h4><hr>
 
-        <!-- Etiquetas de filtros -->
-        <div id="activeFilters" class="mb-3">
-            <div class="d-flex align-items-center flex-wrap gap-2">
-                <strong>Filtros:</strong>
+        <!-- Filtrado -->
+        <div class="mb-3 d-flex gap-3">
+            <strong>Filtros:</strong>
+
+            <!-- Etiquetas de filtros -->
+            <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2">
 
                 @if(session('filters'))
                     @foreach(session('filters') as $key => $value)
@@ -26,66 +28,92 @@
                 @endif
 
                 <!-- Botón para editar filtros -->
-                <button type="button" class="btn btn-sm btn-outline-primary ms-2" id="toggleFilters">Editar filtros</button>
+                <button id="toggleFilters" type="button" class="btn btn-sm btn-outline-primary ms-2">Editar filtros</button>
             </div>
         </div>
 
         <!-- Formulario de edición de filtros -->
-        <form id="filterForm" action="{{ route('items.index') }}" method="GET" style="display: none;">
-            <div class="d-flex flex-wrap align-items-center justify-content-between">
-                <div class="d-flex flex-wrap align-items-center gap-2 mb-2 mb-md-0">
+        <form id="filterForm" class="d-none" action="{{ route('items.index') }}" method="GET">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
 
-                    <strong class="me-2">Filtros aplicados:</strong>
-
-                    <!-- Filtro de búsqueda por nombre (si hay filtro, lo muestra) -->
-                    <div class="input-group input-group-sm w-auto">
-                        <input type="text" name="form[query]" value="{{ session('filters.query') ?? '' }}" class="form-control" placeholder="Buscar..." {{ session('filters.query') ? 'value=' . session('filters.query') : '' }}>
-                    </div>
-
-                    <!-- Filtro de rango de precios -->
-                    <div class="input-group input-group-sm w-auto">
-                        <input type="number" step="0.01" name="form[minValue]" value="{{ session('filters.minValue') ?? '' }}" class="form-control" style="width: 80px;" placeholder="Mín €">
-                        <input type="number" step="0.01" name="form[maxValue]" value="{{ session('filters.maxValue') ?? '' }}" class="form-control" style="width: 80px;" placeholder="Máx €">
-                    </div>
-
-                    <!-- Filtro de tipo -->
-                    <select name="form[tipo]" class="form-select form-select-sm w-auto">
-                        <option selected>Ninguno</option>
-                        @foreach(App\Models\Item::getTipos() as $tipo)
-                            <option>{{ $tipo }}</option>
-                        @endforeach
-                    </select>
-
-                    <!-- Filtro de marca -->
-                    <select name="form[brand]" class="form-select form-select-sm w-auto">
-                        <option value="Ninguno">Marca</option>
-                        @foreach($brands as $brand)
-                            <option value="{{ $brand->id }}" {{ session('filters.brand') == $brand->id ? 'selected' : '' }}>
-                                {{ $brand->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <!-- Filtro de tags -->
-                    <select name="form[tags][]" multiple class="form-select form-select-sm w-auto" style="min-width: 120px;">
-                        @foreach($tags as $tag)
-                            <option value="{{ $tag->id }}" {{ in_array($tag->id, session('filters.tags', [])) ? 'selected' : '' }}>
-                                {{ $tag->nombre }}
-                            </option>
-                        @endforeach
-                    </select>
+                <!-- Filtro de búsqueda por nombre (si hay filtro, lo muestra) -->
+                <div class="input-group input-group-sm w-auto">
+                    <input type="text" name="form[query]" value="{{ session('filters.query') ?? '' }}" class="form-control" placeholder="Buscar..." {{ session('filters.query') ? 'value=' . session('filters.query') : '' }}>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <!-- Botón para quitar los filtros -->
-                    <a href="{{ route('items.index') }}" class="btn btn-outline-danger btn-sm">
-                        Quitar filtros
-                    </a>
-                    <!-- Botón para aplicar los filtros -->
-                    <button class="btn btn-primary btn-sm" type="submit">
-                        Aplicar cambios
-                    </button>
+                <!-- Filtro de rango de precios -->
+                <div class="input-group input-group-sm w-auto">
+                    <input type="number" step="0.01" name="form[minValue]" value="{{ session('filters.minValue') ?? '' }}" class="form-control" style="width: 80px;" placeholder="Mín €">
+                    <input type="number" step="0.01" name="form[maxValue]" value="{{ session('filters.maxValue') ?? '' }}" class="form-control" style="width: 80px;" placeholder="Máx €">
                 </div>
+
+                <!-- Filtro de tipo -->
+                <select name="form[tipo]" class="form-select form-select-sm w-auto">
+                    <option disabled selected value="Ninguno">Seleccione un tipo</option>
+                    <option value="Ninguno">Ninguno</option>
+                    @foreach(App\Models\Item::getTipos() as $tipo)
+                        <option value="{{ $tipo }}" {{ session('filters.tipo') == $tipo ? 'selected' : '' }}>
+                            {{ $tipo }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <!-- Filtro de marca -->
+                <select name="form[brand]" class="form-select form-select-sm w-auto">
+                    <option disabled selected value="Ninguno">Seleccione una marca</option>
+                    <option value="Ninguno">Ninguna</option>
+                    @foreach($brands as $brand)
+                        <option value="{{ $brand->id }}" {{ session('filters.brand') == $brand->id ? 'selected' : '' }}>
+                            {{ $brand->nombre }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <!-- Filtro de tags -->
+                <div class="accordion w-100 mt-1" id="tagsAccordion">
+                    <div class="accordion-item border-0">
+                        <h2 class="accordion-header" iid="headingTags">
+                            <button class="accordion-button collapsed bg-transparent p-2 shadow-sm" 
+                                type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#collapseTags"
+                                aria-expanded="false" 
+                                aria-controls="collapseTags">
+                                
+                                Tags
+                            </button>
+                        </h2>
+                        <div id="collapseTags" class="accordion-collapse collapse" aria-labelledby="headingTags" data-bs-parent="#tagsAccordion">
+                            <div class="accordion-body px-1 py-2">
+                                <input type="text" id="searchTags" class="form-control form-control-sm mb-3" placeholder="Buscar tags...">
+                                <div class="row" id="tagsContainer">
+                                    @foreach($tags as $tag)
+                                        <div class="col-md-4 tag-item">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="form[tags][]" id="tag_{{ $tag->id }}" value="{{ $tag->id }}"
+                                                    {{ in_array($tag->id, session('filters.tags', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="tag_{{ $tag->id }}">
+                                                    {{ $tag->nombre }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <!-- Botón para quitar los filtros -->
+                <a href="{{ route('items.index') }}" class="btn btn-outline-danger btn-sm">
+                    Quitar filtros
+                </a>
+                <!-- Botón para aplicar los filtros -->
+                <button class="btn btn-primary btn-sm" type="submit">
+                    Aplicar cambios
+                </button>
             </div>
         </form>
 
@@ -129,41 +157,5 @@
     </div>
 @endsection
 
-<script>
-    const toggleButton = document.getElementById('toggleFilters');
-    const filterForm = document.getElementById('filterForm');
-    const activeFilters = document.getElementById('activeFilters');
-
-    toggleButton?.addEventListener('click', () => {
-        const isFormVisible = filterForm.style.display === 'block';
-        filterForm.style.display = isFormVisible ? 'none' : 'block';
-        activeFilters.style.display = isFormVisible ? 'flex' : 'none';
-    });
-</script>
-
-
-<script>
-    const filterForm = document.getElementById('filterForm');
-
-    filterForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Evitar que se envíe el formulario de forma tradicional
-
-        // Recoger los datos del formulario
-        const formData = new FormData(filterForm);
-
-        // Enviar la solicitud AJAX
-        fetch('{{ route('items.index') }}', {
-            method: 'GET',
-            body: formData
-        })
-        .then(response => response.text()) // Esperar la respuesta como texto
-        .then(data => {
-            // Actualizar el contenido de los ítems en la página
-            document.getElementById('itemsContainer').innerHTML = data;
-        })
-        .catch(error => {
-            console.error('Error al actualizar los resultados:', error);
-        });
-    });
-</script>
+<script src="{{ asset('scripts/filter.js') }}"></script>
 

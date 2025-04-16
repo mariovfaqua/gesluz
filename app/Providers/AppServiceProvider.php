@@ -23,8 +23,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('layouts.main', function ($view) {
-            $brands = Brand::all(); // Recupera todas las marcas
-            $tags = Tag::all(); // Recupera todos los tags
+            $brands = Brand::orderBy('nombre', 'asc')->get(); // Ordena marcas alfabéticamente
+            $tags = Tag::orderBy('nombre', 'asc')->get();     // Ordena tags alfabéticamente
             
             $view->with([
                 'brands' => $brands,
@@ -33,8 +33,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('items.form', function ($view) {
-            $brands = Brand::all(); // Recupera todas las marcas
-            $tags = Tag::all(); // Recupera todos los tags
+            $brands = Brand::orderBy('nombre', 'asc')->get(); // Ordena marcas alfabéticamente
+            $tags = Tag::orderBy('nombre', 'asc')->get();     // Ordena tags alfabéticamente
             
             $view->with([
                 'brands' => $brands,
@@ -43,8 +43,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('items.edit', function ($view) {
-            $brands = Brand::all(); // Recupera todas las marcas
-            $tags = Tag::all(); // Recupera todos los tags
+            $brands = Brand::orderBy('nombre', 'asc')->get(); // Ordena marcas alfabéticamente
+            $tags = Tag::orderBy('nombre', 'asc')->get();     // Ordena tags alfabéticamente
             
             $view->with([
                 'brands' => $brands,
@@ -53,8 +53,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('items.list', function ($view) {
-            $brands = Brand::all(); // Recupera todas las marcas
-            $tags = Tag::all(); // Recupera todos los tags
+            $brands = Brand::orderBy('nombre', 'asc')->get(); // Ordena marcas alfabéticamente
+            $tags = Tag::orderBy('nombre', 'asc')->get();     // Ordena tags alfabéticamente
             
             $view->with([
                 'brands' => $brands,
