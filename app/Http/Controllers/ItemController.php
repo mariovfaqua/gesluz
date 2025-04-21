@@ -209,12 +209,16 @@ class ItemController extends Controller
     }
 
     /**
-     * Aplicar tags de acceso rápido.
+     * Buscar tags de acceso rápido.
      */
     public function quickLink($type, $value)
     {
         switch ($type) {
             case 'distribucion':
+                // Guardar filtros en sesión
+                session()->forget('filters');
+                session(['filters' => ['distribucion' => $value]]);
+
                 if($value == 'interior'){
                     $items = Item::whereIn('distribucion', ['Dormitorio', 'Cocina', 'Baño', 'Salón'])->paginate(40);
                 } elseif ($value == 'exterior'){
@@ -228,6 +232,10 @@ class ItemController extends Controller
                 $tag = Tag::where('nombre', $value)->first();
 
                 if ($tag) {
+                    // Guardar filtros en sesión
+                    session()->forget('filters');
+                    session(['filters' => ['tags' => [$value]]]);
+
                     $items = $tag->items()->paginate(40);
                 } else {
                     return redirect()->route('items.index');
@@ -285,6 +293,12 @@ class ItemController extends Controller
             $appliedFilters['tipo'] = $form['tipo'];
         }
 
+        // Filtrar por distribución
+        if (!empty($form['distribucion']) && $form['tipo'] !== 'Ninguno') {
+            $query->where('tipo', $form['tipo']);
+            $appliedFilters['tipo'] = $form['tipo'];
+        }
+
         // Filtrar por marca
         if (!empty($form['brand']) && $form['brand'] !== 'Ninguno') {
             $query->where('id_brand', $form['brand']);
@@ -298,11 +312,6 @@ class ItemController extends Controller
             });
             $appliedFilters['tags'] = $form['tags'];
         }
-
-        // Filtrar por color
-        // if ($form['color'] && $form['color'] !== 'Ninguno') {
-        //     $items->where('color', $form['color']);
-        // }
 
         // Guardar filtros en sesión
         session(['filters' => $appliedFilters]);
@@ -325,4 +334,11 @@ class ItemController extends Controller
 
         return $tagIds;
     }
+
+    public function clearFilters()
+    {
+        session()->forget('filters');
+        return redirect()->route('items.index');
+    }
+
 }

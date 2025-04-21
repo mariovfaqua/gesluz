@@ -248,11 +248,13 @@
                     </a>
 
                     <ul class="dropdown-menu" aria-labelledby="distributionDropdown">
-                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'dormitorio']) }}">Dormitorio</a></li>
-                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Baño']) }}">Baño</a></li>
-                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Jardín']) }}">Jardín</a></li>
-                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Cocina']) }}">Cocina</a></li>
-                        <li><a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Salón']) }}">Salón</a></li>
+                        @foreach(App\Models\Item::getDistribucion() as $distribucion)
+                            <li>
+                                <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => $distribucion]) }}">
+                                    {{ $distribucion }}
+                                </a>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
             </li>

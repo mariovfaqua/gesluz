@@ -44,4 +44,10 @@ class Item extends Model
     {
         return ['Plafón', 'Sobremesa', 'Auxiliar', 'Colgante', 'Empotrada', 'De pie', 'Foco', 'Tira led', 'Otro'];
     }
+
+    // Devuelve un listado de las distribuciones que coincide con la migración
+    public static function getDistribucion()
+    {
+        return ['Dormitorio', 'Baño', 'Jardín', 'Cocina', 'Salón', 'Otro'];
+    }
 }

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterForm.classList.toggle('d-none', !isHidden);
         activeFilters.classList.toggle('d-none', isHidden);
 
-        toggleButton.textContent = isHidden ? 'Ocultar filtros' : 'Editar filtros';
+        toggleButton.textContent = isHidden ? 'Ocultar editor de filtros' : 'Editar filtros';
     });
 
     searchInput?.addEventListener('input', () => {

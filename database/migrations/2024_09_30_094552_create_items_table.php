@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre', 100);
             $table->text('descripcion');
             $table->float('precio', 7, 2)->unsigned();
-            $table->enum('distribucion', ['salón', 'dormitorio', 'cocina', 'baño', 'jardín', 'otros']);
+            $table->enum('distribucion', ['Salón', 'Dormitorio', 'Cocina', 'Baño', 'Jardín', 'Otro']);
             $table->enum('tipo', ['Plafón', 'Sobremesa', 'Auxiliar', 'Colgante', 'Empotrada', 'De pie', 'Foco', 'Tira led', 'Otro']);
             $table->float('alto', 6, 2)->unsigned();
             $table->float('ancho', 3, 2)->unsigned();
