@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id(); // Clave primaria (id)
             $table->string('nombre'); // Nombre del destinatario
-            $table->string('linea_1'); // Dirección línea 1
+            $table->string('email', 150); // Correo del destinatario
+            $table->string('telefono'); // Teléfono del destinatario
+            $table->string('linea_1')->nullable(); // Dirección línea 1
             $table->string('linea_2')->nullable(); // Dirección línea 2 (opcional)
-            $table->string('provincia', 50); // Provincia
-            $table->string('ciudad', 50); // Ciudad
-            $table->string('pais', 100); // País
-            $table->string('codigo_postal', 10); // Código postal
+            $table->string('provincia', 50)->nullable();  // Provincia
+            $table->string('ciudad', 50)->nullable();  // Ciudad
+            $table->string('pais', 100)->nullable();  // País
+            $table->string('codigo_postal', 10)->nullable();  // Código postal
             $table->boolean('primaria')->default(false); // Si es la dirección principal de un usuario o no
             $table->foreignId('id_user')->nullable()->constrained('users')->onDelete('cascade')->nullable(); // Clave foránea a users (id_user)
             $table->timestamps();

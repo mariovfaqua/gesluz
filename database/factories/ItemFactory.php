@@ -24,7 +24,7 @@ class ItemFactory extends Factory
             'nombre' => $this->faker->word(),  // Un nombre aleatorio
             'descripcion' => $this->faker->sentence(10),  // Una oración de 10 palabras
             'precio' => $this->faker->randomFloat(2, 10, 1000),  // Un número decimal con 2 decimales entre 10 y 1000
-            'distribucion' => $this->faker->randomElement(['salón', 'dormitorio', 'cocina', 'baño', 'jardín', 'otros']), // Distribución aleatoria
+            'distribucion' => $this->faker->randomElement(['Salón', 'Dormitorio', 'Cocina', 'Baño', 'Jardín', 'Otro']), // Distribución aleatoria
             'tipo' => $this->faker->randomElement(['plafón', 'sobremesa', 'auxiliar', 'colgante', 'empotrada', 'de pie', 'foco', 'tira led', 'otro']),  // Un tipo aleatorio
             'alto' => $this->faker->randomFloat(2, 10, 1000),  // Un número decimal con 2 decimales entre 10 y 1000
             'ancho' => $this->faker->randomFloat(2, 10, 1000),  // Un número decimal con 2 decimales entre 10 y 1000

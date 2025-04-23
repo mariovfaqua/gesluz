@@ -29,6 +29,11 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin'
         ]);
 
+        Tag::factory()->create([
+            'id' => 1,
+            'nombre' => 'ofertas'
+        ]);
+
         Address::factory(100)->create();
         Brand::factory(50)->create();
         Item::factory(100)->create();

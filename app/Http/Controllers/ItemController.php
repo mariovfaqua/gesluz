@@ -234,7 +234,7 @@ class ItemController extends Controller
                 if ($tag) {
                     // Guardar filtros en sesión
                     session()->forget('filters');
-                    session(['filters' => ['tags' => [$value]]]);
+                    session(['filters' => ['tags' => [$tag->id]]]);
 
                     $items = $tag->items()->paginate(40);
                 } else {
