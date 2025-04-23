@@ -227,6 +227,13 @@ class ItemController extends Controller
                     $items = Item::where('distribucion', $value)->paginate(40);
                 }
                 break;
+            case 'tipo':
+                // Guardar filtros en sesión
+                session()->forget('filters');
+                session(['filters' => ['tipo' => $value]]);
+
+                $items = Item::where('tipo', $value)->paginate(40);
+                break;
             case 'tag':
                 // Buscar el tag por nombre y obtener los items relacionados
                 $tag = Tag::where('nombre', $value)->first();

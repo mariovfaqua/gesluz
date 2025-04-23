@@ -236,10 +236,42 @@
                 <a class="nav-link text-white" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'exterior']) }}">Exterior</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Tipos</a>
+            <div class="dropdown">
+                    <a class="nav-link text-white" href="#" id="distributionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tipos
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="distributionDropdown">
+                        @foreach(App\Models\Item::getTipos() as $tipo)
+                            <li>
+                                <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'tipo', 'value' => $tipo]) }}">
+                                    {{ $tipo }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Estilos</a>
+                <div class="dropdown">
+                    <a class="nav-link text-white" href="#" id="distributionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Estilos
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="distributionDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'tags', 'value' => 'moderno']) }}">
+                                Moderno
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'tags', 'value' => 'clásico']) }}">
+                                Clásico
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
             <li class="nav-item">
                 <div class="dropdown">

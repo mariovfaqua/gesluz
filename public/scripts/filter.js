@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleButton.textContent = isHidden ? 'Ocultar editor de filtros' : 'Editar filtros';
     });
 
+    // Buscar coincidencias el los tags
     searchInput?.addEventListener('input', () => {
         const query = searchInput.value.toLowerCase();
 

@@ -9,47 +9,51 @@
         <h4>Resultados de la búsqueda</h4><hr>
 
         <!-- Filtrado -->
-        @if(session('filters'))
+        
             <div class="mb-3 d-flex gap-3">
                 <strong>Filtros:</strong>
 
-                <!-- Etiquetas de filtros -->
-                <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2">
-                    @foreach(session('filters') as $key => $value)
-                        @php
-                            // Nombre legible de cada categoría de filtro
-                            $label = match ($key) {
-                                'query' => 'Búsqueda',
-                                'minValue' => 'Precio mínimo',
-                                'maxValue' => 'Precio máximo',
-                                'tipo' => 'Tipo',
-                                'brand' => 'Marca',
-                                'tags' => 'Tag',
-                                default => ucfirst($key),
-                            };
-                        @endphp
+                @if(session('filters'))
+                    <!-- Etiquetas de filtros -->
+                    <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-1">
+                        @foreach(session('filters') as $key => $value)
+                            @php
+                                // Nombre legible de cada categoría de filtro
+                                $label = match ($key) {
+                                    'query' => 'Búsqueda',
+                                    'minValue' => 'Precio mínimo',
+                                    'maxValue' => 'Precio máximo',
+                                    'tipo' => 'Tipo',
+                                    'brand' => 'Marca',
+                                    'tags' => 'Tag',
+                                    default => ucfirst($key),
+                                };
+                            @endphp
 
-                        @if($key === 'tags')
-                            @foreach($value as $v)
+                            @if($key === 'tags')
+                                @foreach($value as $v)
+                                    @php
+                                        $tag = $tags->firstWhere('id', $v);
+                                        $text = $tag?->nombre ?? $v;
+                                    @endphp
+                                    <span class="badge bg-secondary">{{ $label }}: {{ $text }}</span>
+                                @endforeach
+                            @else
                                 @php
-                                    $tag = $tags->firstWhere('id', $v);
-                                    $text = $tag?->nombre ?? $v;
+                                    $text = $value;
+
+                                    if ($key === 'brand') {
+                                        $brand = $brands->firstWhere('id', $value);
+                                        $text = $brand?->nombre ?? $value;
+                                    }
                                 @endphp
                                 <span class="badge bg-secondary">{{ $label }}: {{ $text }}</span>
-                            @endforeach
-                        @else
-                            @php
-                                $text = $value;
-
-                                if ($key === 'brand') {
-                                    $brand = $brands->firstWhere('id', $value);
-                                    $text = $brand?->nombre ?? $value;
-                                }
-                            @endphp
-                            <span class="badge bg-secondary">{{ $label }}: {{ $text }}</span>
-                        @endif
-                    @endforeach
-                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @else
+                    <i>Ningún filtro activo</i>
+                @endif
 
                 <!-- Botón para editar filtros -->
                 <button id="toggleFilters" type="button" class="btn btn-sm btn-outline-primary ms-2">Editar filtros</button>
@@ -72,7 +76,7 @@
 
                     <!-- Filtro de tipo -->
                     <select name="form[tipo]" class="form-select form-select-sm w-auto">
-                        <option disabled selected value="Ninguno">Seleccione un tipo</option>
+                        <option disabled selected value="Ninguno">Seleccionar tipo</option>
                         <option value="Ninguno">Ninguno</option>
                         @foreach(App\Models\Item::getTipos() as $tipo)
                             <option value="{{ $tipo }}" {{ session('filters.tipo') == $tipo ? 'selected' : '' }}>
@@ -83,7 +87,7 @@
 
                     <!-- Filtro de marca -->
                     <select name="form[brand]" class="form-select form-select-sm w-auto">
-                        <option disabled selected value="Ninguno">Seleccione una marca</option>
+                        <option disabled selected value="Ninguno">Seleccionar marca</option>
                         <option value="Ninguno">Ninguna</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->id }}" {{ session('filters.brand') == $brand->id ? 'selected' : '' }}>
@@ -94,7 +98,7 @@
 
                     <!-- Filtro de distribución -->
                     <select name="form[distribucion]" class="form-select form-select-sm w-auto">
-                        <option disabled selected value="Ninguno">Seleccione una distribución</option>
+                        <option disabled selected value="Ninguno">Seleccionar distribución</option>
                         <option value="Ninguno">Ninguna</option>
                         @foreach(App\Models\Item::getDistribucion() as $distribucion)
                             <option value="{{ $distribucion }}" {{ session('filters.distribucion') == $distribucion ? 'selected' : '' }}>
@@ -150,7 +154,6 @@
                     </button>
                 </div>
             </form>
-        @endif
 
         <div class="card_container">
             @forelse($items as $item)
