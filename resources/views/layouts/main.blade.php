@@ -232,11 +232,13 @@
             <li class="nav-item">
                 <a class="nav-link text-white" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'interior']) }}">Interior</a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link text-white" href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'exterior']) }}">Exterior</a>
             </li>
+
             <li class="nav-item">
-            <div class="dropdown">
+                <div class="dropdown">
                     <a class="nav-link text-white" href="#" id="distributionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         Tipos
                     </a>
@@ -252,6 +254,7 @@
                     </ul>
                 </div>
             </li>
+
             <li class="nav-item">
                 <div class="dropdown">
                     <a class="nav-link text-white" href="#" id="distributionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -260,19 +263,20 @@
 
                     <ul class="dropdown-menu" aria-labelledby="distributionDropdown">
                         <li>
-                            <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'tags', 'value' => 'moderno']) }}">
+                            <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'tag', 'value' => 'moderno']) }}">
                                 Moderno
                             </a>
                         </li>
 
                         <li>
-                            <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'tags', 'value' => 'clásico']) }}">
+                            <a class="dropdown-item" href="{{ route('items.quickLink', ['type' => 'tag', 'value' => 'clásico']) }}">
                                 Clásico
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
+            
             <li class="nav-item">
                 <div class="dropdown">
                     <a class="nav-link text-white" href="#" id="distributionDropdown" data-bs-toggle="dropdown" aria-expanded="false">

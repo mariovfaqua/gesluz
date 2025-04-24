@@ -301,9 +301,9 @@ class ItemController extends Controller
         }
 
         // Filtrar por distribución
-        if (!empty($form['distribucion']) && $form['tipo'] !== 'Ninguno') {
-            $query->where('tipo', $form['tipo']);
-            $appliedFilters['tipo'] = $form['tipo'];
+        if (!empty($form['distribucion']) && $form['distribucion'] !== 'Ninguno') {
+            $query->where('distribucion', $form['distribucion']);
+            $appliedFilters['distribucion'] = $form['distribucion'];
         }
 
         // Filtrar por marca
