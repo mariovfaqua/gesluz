@@ -8,12 +8,12 @@
     <div class="header_image"></div>
     <div class="container mt-3">
         <div class="card_container">
-            <a href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'dormitorio']) }}" class="dorm">DORMITORIO</a>
+            <a href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Dormitorio']) }}" class="dorm">DORMITORIO</a>
             <a href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Baño']) }}" class="bano">BAÑO</a>
             <a href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Jardín']) }}" class="jard">JARDÍN</a>
             <a href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Cocina']) }}" class="kit">COCINA</a>
             <a href="{{ route('items.quickLink', ['type' => 'distribucion', 'value' => 'Salón']) }}" class="lv">SALÓN</a>
-            <a href="{{ route('items.index') }}" class="otros">OTROS</a>
+            <a href="{{ route('items.quickLink', ['type' => 'tipo', 'value' => 'Repuesto']) }}" class="otros">REPUESTOS Y BOMBILLAS</a>
         </div>
         <div class="bg-dark text-light mt-3 consignas">
             <div>
