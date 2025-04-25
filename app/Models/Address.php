@@ -13,6 +13,7 @@ class Address extends Model
         'nombre',
         'linea_1',
         'linea_2',
+        'destinatario',
         'provincia',
         'ciudad',
         'pais',

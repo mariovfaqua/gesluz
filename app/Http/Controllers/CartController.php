@@ -114,18 +114,29 @@ class CartController extends Controller
             $address = Address::findOrFail($request->selected_address);
             session(['address' => $address->toArray()]);
         } else {
-            // Validar los datos del formulario
-            $validatedData = $request->validate([
-                'nombre'        => 'required|string|max:255',
-                'linea_1'       => 'required|string|max:255',
-                'linea_2'       => 'nullable|string|max:255',
-                'pais'          => 'required|string|max:100',
-                'provincia'     => 'required|string|max:50',
-                'ciudad'        => 'required|string|max:50',
-                'codigo_postal' => 'required|string|max:10', 
-            ]);
+            // Si el checkbox está marcado
+            if ($request->has('send_home')) {
+                $validatedData = $request->validate([
+                    'nombre'        => 'required|string|max:255',
+                    'email'         => 'required|email|max:150',
+                    'telefono'      => 'required|string|max:255',
+                    'destinatario'  => 'required|string|max:255',
+                    'linea_1'       => 'required|string|max:255',
+                    'linea_2'       => 'nullable|string|max:255',
+                    'pais'          => 'required|string|max:100',
+                    'provincia'     => 'required|string|max:50',
+                    'ciudad'        => 'required|string|max:50',
+                    'codigo_postal' => 'required|string|max:10', 
+                ]);
+            } else {
+                $validatedData = $request->validate([
+                    'nombre'   => 'required|string|max:255',
+                    'email'    => 'required|email|max:150',
+                    'telefono' => 'required|string|max:255',
+                ]);
+            }
 
-            // Guardar en la sesión la nueva dirección ingresada
+            // Guardar en la sesión la información ingresada
             session(['address' => $validatedData]);
         }
 

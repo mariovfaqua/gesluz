@@ -18,6 +18,7 @@ class AddressFactory extends Factory
             'nombre' => fake()->name(),
             'email' => $this->faker->unique()->safeEmail, // Un correo
             'telefono' => $this->faker->phoneNumber, // Un teléfono
+            'destinatario' => fake()->name(),
             'linea_1' => $this->faker->streetAddress(), // Dirección aleatoria
             'linea_2' => $this->faker->secondaryAddress(), // Segunda línea opcional
             'provincia' => $this->faker->state(),
