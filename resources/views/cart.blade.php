@@ -125,7 +125,7 @@
                 @endif
             </div>
 
-            <!-- Modal de dirección -->
+            <!-- Modal de datos de contacto -->
             <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModal" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -153,19 +153,19 @@
                                                 <form id="savedAddressForm" action="{{ route('cart.storeAddress') }}" method="POST">
                                                     @csrf
                                                     <div class="list-group">
-                                                        @foreach ($addresses as $address)
+                                                        @foreach ($addresses as $saved_address)
                                                             <label class="list-group-item d-flex align-items-start">
                                                                 <input class="form-check-input me-2" 
                                                                     type="radio"
                                                                     name="selected_address" 
-                                                                    value="{{ $address->id }}" 
-                                                                    {{ session('address.id') == $address->id ? 'checked' : '' }}
+                                                                    value="{{ $saved_address->id }}" 
+                                                                    {{ session('address.id') == $saved_address->id ? 'checked' : '' }}
                                                                 >
                                                                 <div>
-                                                                    <strong>{{ $address->nombre }}</strong><br>
-                                                                    {{ $address->linea_1 }} {{ $address->linea_2 }}<br>
-                                                                    {{ $address->ciudad }}, {{ $address->provincia }} ({{ $address->codigo_postal }})<br>
-                                                                    {{ $address->pais }}
+                                                                    <strong>{{ $saved_address->nombre }}</strong><br>
+                                                                    {{ $saved_address->linea_1 }} {{ $saved_address->linea_2 }}<br>
+                                                                    {{ $saved_address->ciudad }}, {{ $saved_address->provincia }} ({{ $saved_address->codigo_postal }})<br>
+                                                                    {{ $saved_address->pais }}
                                                                 </div>
                                                             </label>
                                                         @endforeach
@@ -202,7 +202,7 @@
                                                     <input
                                                         class="form-control" 
                                                         id="nombre" 
-                                                        name="nombre" 
+                                                        name="nombre"
                                                         value="{{ $address['nombre'] ?? '' }}"
                                                         required
                                                     >
@@ -215,7 +215,7 @@
                                                         type="email" 
                                                         class="form-control" 
                                                         id="email" 
-                                                        name="email" 
+                                                        name="email"
                                                         value="{{ $address['email'] ?? '' }}"
                                                         required
                                                     >
@@ -344,27 +344,4 @@
 </div>
 @endsection
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('toggleAddress');
-        const fields = document.getElementById('addressFields');
-
-        toggle.addEventListener('change', function() {
-            if (toggle.checked) {
-                fields.classList.add('show');
-                // marca los nuevos campos como obligatorios
-                document.getElementById('nombre').setAttribute('required', 'required');
-                document.getElementById('linea_1').setAttribute('required', 'required');
-                document.getElementById('pais').setAttribute('required', 'required');
-                document.getElementById('provincia').setAttribute('required', 'required');
-                document.getElementById('ciudad').setAttribute('required', 'required');
-                document.getElementById('codigo_postal').setAttribute('required', 'required');
-            } else {
-                fields.classList.remove('show');
-                // quitar la obligatoriedad
-                ['nombre','linea_1','pais','provincia','ciudad','codigo_postal']
-                    .forEach(id => document.getElementById(id).removeAttribute('required'));
-            }
-        });
-    });
-</script>
+<script src="{{ asset('scripts/toggleDirection.js') }}"></script>
