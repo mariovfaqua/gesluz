@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id(); // Clave primaria (id)
-            $table->string('nombre'); // Nombre del contacto
-            $table->string('email', 150); // Correo del destinatario
-            $table->string('telefono'); // Teléfono del destinatario
             $table->string('destinatario'); // Nombre del destinatario
             $table->string('linea_1')->nullable(); // Dirección línea 1
             $table->string('linea_2')->nullable(); // Dirección línea 2 (opcional)

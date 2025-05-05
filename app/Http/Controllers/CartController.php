@@ -109,17 +109,16 @@ class CartController extends Controller
      */
     public function storeAddress(Request $request)
     {
-        if ($request->has('selected_address')) {
-            // Si se seleccionó una dirección, buscarla en la base de datos y guardarla en la sesión
-            $address = Address::findOrFail($request->selected_address);
-            session(['address' => $address->toArray()]);
-        } else {
-            // Si el checkbox está marcado
-            if ($request->has('send_home')) {
-                $validatedData = $request->validate([
-                    'nombre'        => 'required|string|max:255',
-                    'email'         => 'required|email|max:150',
-                    'telefono'      => 'required|string|max:255',
+        try {
+            // Si se seleccionó una dirección guardada
+            if ($request->has('selected_address')) {
+                $address = Address::findOrFail($request->selected_address);
+                session(['address' => $address->toArray()]);
+            }
+
+            // Si el usuario quiere envío a domicilio
+            else {
+                $addressData = $request->validate([
                     'destinatario'  => 'required|string|max:255',
                     'linea_1'       => 'required|string|max:255',
                     'linea_2'       => 'nullable|string|max:255',
@@ -128,19 +127,17 @@ class CartController extends Controller
                     'ciudad'        => 'required|string|max:50',
                     'codigo_postal' => 'required|string|max:10', 
                 ]);
-            } else {
-                $validatedData = $request->validate([
-                    'nombre'   => 'required|string|max:255',
-                    'email'    => 'required|email|max:150',
-                    'telefono' => 'required|string|max:255',
-                ]);
+
+                session(['address' => $addressData]);
             }
 
-            // Guardar en la sesión la información ingresada
-            session(['address' => $validatedData]);
-        }
+            return redirect()->back()->with('success', 'Datos guardados correctamente.');
 
-        return redirect()->back();
+        } catch (\Exception $e) {
+            
+            \Log::error('Error al guardar dirección o contacto: '.$e->getMessage());
+            return redirect()->back()->withErrors('Ha ocurrido un error inesperado al guardar los datos. Inténtalo de nuevo.');
+        }
     }
 
     /**

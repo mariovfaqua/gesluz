@@ -1,22 +1,37 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const toggle = document.getElementById('toggleAddress');
-    const fields = document.getElementById('addressFields');
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleAddress = document.getElementById('toggleAddress');
+    const editAddressBtn = document.getElementById('editAddressBtn');
+    const submitBtn = document.getElementById('submitBtn');
 
-    toggle.addEventListener('change', function() {
-        if (toggle.checked) {
-            fields.classList.add('show');
-            // marca los nuevos campos como obligatorios
-            document.getElementById('nombre').setAttribute('required', 'required');
-            document.getElementById('linea_1').setAttribute('required', 'required');
-            document.getElementById('pais').setAttribute('required', 'required');
-            document.getElementById('provincia').setAttribute('required', 'required');
-            document.getElementById('ciudad').setAttribute('required', 'required');
-            document.getElementById('codigo_postal').setAttribute('required', 'required');
+    const addressIsEmpty = {{ empty(session('address')) ? 'true' : 'false' }};
+    const isUserLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+
+    function handleAddressToggle() {
+        if (toggleAddress.checked) {
+            editAddressBtn.style.display = 'inline-block';
+
+            if (addressIsEmpty) {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('btn-warning');
+                submitBtn.classList.add('btn-secondary');
+                submitBtn.innerText = 'Debes completar la dirección';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('btn-secondary');
+                submitBtn.classList.add('btn-warning');
+                submitBtn.innerText = 'Finalizar pedido';
+            }
         } else {
-            fields.classList.remove('show');
-            // quitar la obligatoriedad
-            ['nombre','linea_1','pais','provincia','ciudad','codigo_postal']
-                .forEach(id => document.getElementById(id).removeAttribute('required'));
+            editAddressBtn.style.display = 'none';
+            submitBtn.disabled = !isUserLoggedIn;
+            submitBtn.classList.remove('btn-secondary');
+            submitBtn.classList.add('btn-warning');
+            submitBtn.innerText = 'Finalizar pedido';
         }
-    });
+    }
+
+    if (toggleAddress) {
+        toggleAddress.addEventListener('change', handleAddressToggle);
+        handleAddressToggle(); // Ejecutar al cargar
+    }
 });

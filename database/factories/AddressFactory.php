@@ -15,9 +15,6 @@ class AddressFactory extends Factory
         $user = User::inRandomOrder()->first();
 
         return [
-            'nombre' => fake()->name(),
-            'email' => $this->faker->unique()->safeEmail, // Un correo
-            'telefono' => $this->faker->phoneNumber, // Un teléfono
             'destinatario' => fake()->name(),
             'linea_1' => $this->faker->streetAddress(), // Dirección aleatoria
             'linea_2' => $this->faker->secondaryAddress(), // Segunda línea opcional

@@ -6,6 +6,6 @@
     @endforelse
 </div>
 
-<div class="mt-4">
-    {{ $items->links() }}
-</div>
+<nav aria-label="Page navigation">
+    {{ $items->links('pagination.bootstrap-5-custom') }}
+</nav>

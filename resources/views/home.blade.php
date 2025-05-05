@@ -65,7 +65,7 @@
                 <!-- Lista de direcciones -->
                 <a href="{{ route('addresses.index') }}">
                     <div class="admin-card p-3 border rounded">
-                        Direcciones
+                        Mis datos
                     </div>
                 </a>
 

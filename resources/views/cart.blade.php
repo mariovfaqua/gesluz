@@ -2,6 +2,26 @@
 
 @section('content')
 <div class="container mt-5">
+
+    <!-- Mensajes de éxito y error -->
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+    @endif
+
     <div class="row">
         <!-- Sección izquierda: Tabla de productos -->
         <div class="col-md-7">
@@ -75,67 +95,83 @@
                     <span>{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }} €</span>
                 </div>
 
-                @php
-                    $address = session('address', []);
-                @endphp
-
                 @if(count($items) > 0)
-                    @if(!$address)
-                    <button class="btn btn-secondary w-100 mt-3 p-2" data-bs-toggle="modal" data-bs-target="#addressModal">
-                        Añadir datos de contacto
-                    </button>
-                    @else
-                        <!-- Mostrar resumen de la dirección -->
-                        <div class="p-3 mt-3 border rounded bg-light position-relative">
+                    @if(Auth::check())
+                        @php
+                            $user = Auth::user();
+                            $address = session('address');
+                        @endphp
+
+                        <div class="p-3 mt-3 border rounded bg-light">
                             <strong class="fw-bold">Datos de contacto</strong>
-                            <p class="mb-1">{{ $address['nombre'] }}</p>
+                            <p class="mb-1">{{ $user->name }}</p>
+                            <p class="mb-1">{{ $user->email }}</p>
+                            <p class="mb-1">{{ $user->telefono }}</p>
 
-                            <p class="mb-1">{{ $address['email'] }}</p>
-                            <p class="mb-1">{{ $address['telefono'] }}</p>
+                            @if(session('address'))
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-start position-relative">
+                                    <strong class="fw-bold">Dirección de envío</strong>
 
-                            @if(isset($address['linea_1']))
-                                <p class="mb-1">{{ $address['destinatario'] }}</p>
-                                <p class="mb-1"> {{ $address['linea_1'] }}{{ $address['linea_2'] ? ', ' . $address['linea_2'] : '' }}</p>
-                                <p class="mb-1"> {{ $address['ciudad'] }}, {{ $address['provincia'] }} {{ $address['pais'] }} {{ $address['codigo_postal'] }}</p>
+                                    <!-- <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                                        @csrf
+                                        <button type="submit" class="btn-close" aria-label="Eliminar dirección"></button>
+                                    </form> -->
+                                </div>
+                                @if($address)
+                                    <p class="mb-1">{{ $address['destinatario'] }}</p>
+                                    <p class="mb-1">{{ $address['linea_1'] }}{{ $address['linea_2'] ? ', '.$address['linea_2'] : '' }}</p>
+                                    <p class="mb-1">{{ $address['codigo_postal'] }} {{ $address['ciudad'] }}, {{ $address['provincia'] }}</p>
+                                    <p class="mb-1">{{ $address['pais'] }}</p>
+                                @endif
                             @endif
-
-                            <!-- Botón para editar la dirección -->
-                            <button class="btn btn-secondary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#addressModal">
-                                Editar dirección
-                            </button>
-
-                            <!-- Botón para borrar la sesión -->
-                            <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-none border-0 bg-transparent" title="Eliminar dirección">
-                                    <span class="btn-close"></span>
-                                </button>
-                            </form>
                         </div>
 
-                        <!-- Botón para finalizar pedido activado -->
-                        <form action="{{ route('orders.store') }}" method="POST">
-                            @csrf
-                            <input id="precio_total" name="precio_total" type="hidden" value="{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }}">
-                            <button type="submit" class="btn btn-warning w-100 mt-3 p-2 fw-bold">
-                                Finalizar pedido
-                            </button>
-                        </form>
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="toggleAddress" name="send_home"
+                                {{ session('address') ? 'checked' : '' }}
+                            >
+                            <strong class="form-check-label" for="toggleAddress">
+                                ¿Quieres que te enviemos el pedido a casa?
+                            </strong>
+                            <small>Indícanos tu dirección y nos pondremos en contacto contigo</small>
+                        </div>
+
+                        <!-- Botón para editar dirección -->
+                        <button
+                            id="editAddressBtn"
+                            type="button"
+                            class="btn w-100 btn-primary fw-bold mt-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addressModal"
+                            style="display: none;"
+                        >
+                            Editar dirección
+                        </button>
+
+                        <button id="submitBtn" type="submit" class="btn btn-warning w-100 mt-4 fw-bold">
+                            Finalizar pedido
+                        </button>
+
+                    @else
+                        <!-- Botón que lanza el modal de login -->
+                        <button class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            Inicia sesión para continuar
+                        </button>
                     @endif
                 @endif
-            </div>
 
             <!-- Modal de datos de contacto -->
-            <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModal" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Complete los datos del pedido</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Direcciones guardadas -->
-                            @if(auth()->check()) 
+            @if(auth()->check()) 
+                <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModal" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Seleccionar dirección</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Direcciones guardadas -->
                                 <div class="accordion" id="savedAddressAccordion">
                                     <div class="accordion-item border-0">
                                         <h2 class="accordion-header" id="headingSavedAddress">
@@ -176,75 +212,25 @@
                                         </div>
                                     </div>
                                 </div>
-                            @endif
 
-                            <!-- Añadir nueva dirección -->
-                            <div class="accordion" id="newAddressAccordion">
-                                <div class="accordion-item border-0">
-                                    <h2 class="accordion-header" id="headingNewAddress">
-                                        <button class="accordion-button {{ !auth()->check() ? '' : 'collapsed' }} bg-transparent p-2 shadow-none fw-bold" 
-                                            type="button" 
-                                            data-bs-toggle="collapse" 
-                                            data-bs-target="#collapseNewAddress" 
-                                            aria-expanded="false" 
-                                            aria-controls="collapseNewAddress">
-                                            Añadir nuevos datos de contacto
-                                        </button>
-                                    </h2>
-                                    <div id="collapseNewAddress" class="accordion-collapse collapse {{ !auth()->check() ? 'show' : '' }}" aria-labelledby="collapseNewAddress" data-bs-parent="#newAddressAccordion">
-                                        <div class="accordion-body px-1 py-2">
-                                            <!-- Formulario de nueva dirección -->
-                                            <form id="newAddressForm" action="{{ route('cart.storeAddress') }}" method="POST">
-                                                @csrf
-                                                <!-- Nombre -->
-                                                <div class="mb-3">
-                                                    <label for="nombre" class="form-label">Nombre de contacto</label>
-                                                    <input
-                                                        class="form-control" 
-                                                        id="nombre" 
-                                                        name="nombre"
-                                                        value="{{ $address['nombre'] ?? '' }}"
-                                                        required
-                                                    >
-                                                </div>
-
-                                                <!-- Email -->
-                                                <div class="mb-3">
-                                                    <label for="email" class="form-label">Correo electrónico</label>
-                                                    <input 
-                                                        type="email" 
-                                                        class="form-control" 
-                                                        id="email" 
-                                                        name="email"
-                                                        value="{{ $address['email'] ?? '' }}"
-                                                        required
-                                                    >
-                                                </div>
-
-                                                <!-- Teléfono -->
-                                                <div class="mb-3">
-                                                    <label for="telefono" class="form-label">Teléfono</label>
-                                                    <input 
-                                                        type="tel" 
-                                                        class="form-control" 
-                                                        id="telefono" 
-                                                        name="telefono" 
-                                                        value="{{ $address['telefono'] ?? '' }}"
-                                                        required
-                                                    >
-                                                </div>
-
-                                                <!-- Checkbox para mostrar/ocultar la sección de dirección -->
-                                                <div class="form-check mb-3">
-                                                    <input class="form-check-input" type="checkbox" id="toggleAddress" name="send_home">
-                                                    <label class="form-check-label" for="toggleAddress">
-                                                        <strong>¿Quieres que te enviemos el pedido a casa?</strong> Indícanos tu dirección y nos pondremos en contacto contigo
-                                                    </label>
-                                                </div>
-
-                                                <!-- Contenedor colapsable con todos los campos de dirección -->
-                                                <div id="addressFields" class="collapse">
-                                                    <!-- Sección de dirección -->
+                                <!-- Añadir nueva dirección -->
+                                <div class="accordion" id="newAddressAccordion">
+                                    <div class="accordion-item border-0">
+                                        <h2 class="accordion-header" id="headingNewAddress">
+                                            <button class="accordion-button {{ !auth()->check() ? '' : 'collapsed' }} bg-transparent p-2 shadow-none fw-bold" 
+                                                type="button" 
+                                                data-bs-toggle="collapse" 
+                                                data-bs-target="#collapseNewAddress" 
+                                                aria-expanded="false" 
+                                                aria-controls="collapseNewAddress">
+                                                Añadir nuevos datos de contacto
+                                            </button>
+                                        </h2>
+                                        <div id="collapseNewAddress" class="accordion-collapse collapse {{ !auth()->check() ? 'show' : '' }}" aria-labelledby="collapseNewAddress" data-bs-parent="#newAddressAccordion">
+                                            <div class="accordion-body px-1 py-2">
+                                                <!-- Formulario de nueva dirección -->
+                                                <form id="newAddressForm" action="{{ route('cart.storeAddress') }}" method="POST">
+                                                    @csrf
                                                     <div class="mb-3">
                                                         <label for="destinatario" class="form-label">Nombre destinatario</label>
                                                         <input 
@@ -323,12 +309,12 @@
                                                             value="{{ $address['codigo_postal'] ?? '' }}"
                                                         >
                                                     </div>
-                                                </div>
 
-                                                <button type="submit" class="btn btn-primary w-100 mt-2">
-                                                    Guardar cambios
-                                                </button>
-                                            </form>
+                                                    <button type="submit" class="btn btn-primary w-100 mt-2">
+                                                        Guardar cambios
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -336,7 +322,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         
@@ -344,4 +330,44 @@
 </div>
 @endsection
 
-<script src="{{ asset('scripts/toggleDirection.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleAddress = document.getElementById('toggleAddress');
+        const addressSection = document.getElementById('shippingAddressSection');
+        const editAddressBtn = document.getElementById('editAddressBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        const addressIsEmpty = {{ empty(session('address')) ? 'true' : 'false' }};
+        const isUserLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+
+        function handleAddressToggle() {
+            if (toggleAddress.checked) {
+                editAddressBtn.style.display = 'inline-block';
+
+                if (addressIsEmpty) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.remove('btn-warning');
+                    submitBtn.classList.add('btn-secondary');
+                    addressSection.classList.add('d-none');
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('btn-secondary');
+                    submitBtn.classList.add('btn-warning');
+                    addressSection.classList.remove('d-none');
+                }
+            } else {
+                editAddressBtn.style.display = 'none';
+                submitBtn.disabled = !isUserLoggedIn;
+                submitBtn.classList.remove('btn-secondary');
+                submitBtn.classList.add('btn-warning');
+                submitBtn.innerText = 'Finalizar pedido';
+
+                window.location.href = "{{ route('cart.clearAddress') }}";
+            }
+        }
+
+        if (toggleAddress) {
+            toggleAddress.addEventListener('change', handleAddressToggle);
+        }
+    });
+</script>
