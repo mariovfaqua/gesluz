@@ -109,27 +109,29 @@
                             <p class="mb-1">{{ $user->telefono }}</p>
 
                             @if(session('address'))
-                                <hr>
-                                <div class="d-flex justify-content-between align-items-start position-relative">
-                                    <strong class="fw-bold">Dirección de envío</strong>
+                                <div id="shippingAddressSection">
+                                    <hr>
+                                    <div class="d-flex justify-content-between align-items-start position-relative">
+                                        <strong class="fw-bold">Dirección de envío</strong>
 
-                                    <!-- <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
-                                        @csrf
-                                        <button type="submit" class="btn-close" aria-label="Eliminar dirección"></button>
-                                    </form> -->
+                                        <!-- <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                                            @csrf
+                                            <button type="submit" class="btn-close" aria-label="Eliminar dirección"></button>
+                                        </form> -->
+                                    </div>
+                                    @if($address)
+                                        <p class="mb-1">{{ $address['destinatario'] }}</p>
+                                        <p class="mb-1">{{ $address['linea_1'] }}{{ $address['linea_2'] ? ', '.$address['linea_2'] : '' }}</p>
+                                        <p class="mb-1">{{ $address['codigo_postal'] }} {{ $address['ciudad'] }}, {{ $address['provincia'] }}</p>
+                                        <p class="mb-1">{{ $address['pais'] }}</p>
+                                    @endif
                                 </div>
-                                @if($address)
-                                    <p class="mb-1">{{ $address['destinatario'] }}</p>
-                                    <p class="mb-1">{{ $address['linea_1'] }}{{ $address['linea_2'] ? ', '.$address['linea_2'] : '' }}</p>
-                                    <p class="mb-1">{{ $address['codigo_postal'] }} {{ $address['ciudad'] }}, {{ $address['provincia'] }}</p>
-                                    <p class="mb-1">{{ $address['pais'] }}</p>
-                                @endif
                             @endif
                         </div>
 
                         <div class="form-check mt-4">
                             <input class="form-check-input" type="checkbox" id="toggleAddress" name="send_home"
-                                {{ session('address') ? 'checked' : '' }}
+                                {{ session('success') ? 'checked' : '' }}
                             >
                             <strong class="form-check-label" for="toggleAddress">
                                 ¿Quieres que te enviemos el pedido a casa?
@@ -141,10 +143,9 @@
                         <button
                             id="editAddressBtn"
                             type="button"
-                            class="btn w-100 btn-primary fw-bold mt-2"
+                            class="btn w-100 btn-primary fw-bold mt-2 {{ !session('success') ? 'd-none' : '' }}"
                             data-bs-toggle="modal"
                             data-bs-target="#addressModal"
-                            style="display: none;"
                         >
                             Editar dirección
                         </button>
@@ -340,9 +341,9 @@
         const addressIsEmpty = {{ empty(session('address')) ? 'true' : 'false' }};
         const isUserLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
 
-        function handleAddressToggle() {
+        function handleAddressToggle(triggeredByUser = false) {
             if (toggleAddress.checked) {
-                editAddressBtn.style.display = 'inline-block';
+                editAddressBtn.classList.remove('d-none');
 
                 if (addressIsEmpty) {
                     submitBtn.disabled = true;
@@ -356,18 +357,21 @@
                     addressSection.classList.remove('d-none');
                 }
             } else {
-                editAddressBtn.style.display = 'none';
+                editAddressBtn.classList.add('d-none');
                 submitBtn.disabled = !isUserLoggedIn;
                 submitBtn.classList.remove('btn-secondary');
                 submitBtn.classList.add('btn-warning');
-                submitBtn.innerText = 'Finalizar pedido';
-
-                window.location.href = "{{ route('cart.clearAddress') }}";
+                addressSection.classList.add('d-none');
+                // if (triggeredByUser) {
+                //     window.location.href = "{{ route('cart.clearAddress') }}";
+                // }
             }
         }
 
         if (toggleAddress) {
-            toggleAddress.addEventListener('change', handleAddressToggle);
+            toggleAddress.addEventListener('change', () => handleAddressToggle(true));
+            handleAddressToggle(); // Ejecutar al cargar para reflejar estado
         }
     });
 </script>
+
