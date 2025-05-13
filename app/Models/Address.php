@@ -19,6 +19,12 @@ class Address extends Model
         'id_user',
     ];
 
+    // Relacción muchos a uno con users
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
     // Relación uno a muchos con Orders
     public function orders()
     {

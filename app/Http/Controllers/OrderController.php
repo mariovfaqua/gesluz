@@ -49,60 +49,42 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // Obtener el carrito y la dirección desde la sesión
+        // Si el usuario no está autenticado, redirigir con un mensaje de error
+        if (!auth()->check()) {
+            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        }
+
+        // Obtener el usuario, carrito y la dirección desde la sesión
+        $user = auth()->user();
         $cart = session()->get('cart', []);
         $addressData = session()->get('address', []);
 
-        // Verificar si hay datos de sesión
-        if (!$addressData || !$cart) {
+        // Verificar si existen los datos necesarios
+        if (($request->has('send_home') && !$addressData) || !$cart) {
             return back()->with('error', 'No se ha podido completar la operación.');
         }
 
         DB::beginTransaction(); // Iniciar transacción
         try{
-            // Buscar si la dirección ya existe en la base de datos
-            $address = Address::where('nombre', $addressData['nombre'])
-                            ->where('linea_1', $addressData['linea_1'])
-                            ->where('linea_2', $addressData['linea_2'] ?? null)
-                            ->where('provincia', $addressData['provincia'])
-                            ->where('ciudad', $addressData['ciudad'])
-                            ->where('pais', $addressData['pais'])
-                            ->where('codigo_postal', $addressData['codigo_postal'])
-                            ->when(auth()->check(), function ($query) {
-                                return $query->where('id_user', auth()->id());
-                            })
-                            ->first();
-
-            // Si no existe o no está asociada al usurario, crear la nueva dirección
-            if (!$address || (auth()->check() && auth()->id() !== $address->id_user)) {
-                $address = new Address();
-                $address->nombre = $addressData['nombre'];
-                $address->linea_1 = $addressData['linea_1'];
-                $address->linea_2 = $addressData['linea_2'] ?? null;
-                $address->provincia = $addressData['provincia'];
-                $address->ciudad = $addressData['ciudad'];
-                $address->pais = $addressData['pais'];
-                $address->codigo_postal = $addressData['codigo_postal'];
-
-                // Si el usuario está autenticado, guardar su ID en la dirección nueva
-                if (auth()->check()) {
-                    $address->id_user = auth()->id();
-                }
-
-                $address->save();
-            }
-
             // Crear un nuevo pedido (order)
             $order = new Order();
-            $order->id_address = $address->id; // Asignar la dirección obtenida o creada
+            $order->id_user = $user->id; 
             $order->fecha = now();
-
-            // Convertir el precio total a formato numérico correcto
+            // Convertir el precio total al formato numérico correcto
             $order->precio_total = floatval(str_replace(',', '', $request->precio_total));
 
-            // Si el usuario está autenticado, guardar su ID en el pedido
-            if (auth()->check()) {
-                $order->id_user = auth()->id();
+            // Añadir la dirección
+            if ($request->has('send_home')) {
+                // Determinar si la dirección ya existe o se creará una nueva
+                if (isset($addressData['id']) && $user->addresses()->where('id', $addressData['id'])->exists()) {
+                    // La dirección ya existe y es del usuario
+                    $address = Address::find($addressData['id']);
+                } else {
+                    // Es una dirección nueva
+                    $address = $user->addresses()->create($addressData);
+                }
+
+                $order->id_address = $address->id; // Asignar la dirección obtenida o creada
             }
 
             $order->save();

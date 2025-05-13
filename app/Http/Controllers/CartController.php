@@ -116,7 +116,7 @@ class CartController extends Controller
                 session(['address' => $address->toArray()]);
             }
 
-            // Si el usuario quiere envío a domicilio
+            // Si se creará una nueva dirección
             else {
                 $addressData = $request->validate([
                     'destinatario'  => 'required|string|max:255',
@@ -134,7 +134,7 @@ class CartController extends Controller
             return redirect()->back()->with('success', 'Datos guardados correctamente.');
 
         } catch (\Exception $e) {
-            
+
             \Log::error('Error al guardar dirección o contacto: '.$e->getMessage());
             return redirect()->back()->withErrors('Ha ocurrido un error inesperado al guardar los datos. Inténtalo de nuevo.');
         }

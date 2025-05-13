@@ -102,57 +102,60 @@
                             $address = session('address');
                         @endphp
 
-                        <div class="p-3 mt-3 border rounded bg-light">
-                            <strong class="fw-bold">Datos de contacto</strong>
-                            <p class="mb-1">{{ $user->name }}</p>
-                            <p class="mb-1">{{ $user->email }}</p>
-                            <p class="mb-1">{{ $user->telefono }}</p>
+                        <form action="{{ route('orders.store') }}" method="POST">
+                        @csrf
+                            <div class="p-3 mt-3 border rounded bg-light">
+                                <strong class="fw-bold">Datos de contacto</strong>
+                                <p class="mb-1">{{ $user->name }}</p>
+                                <p class="mb-1">{{ $user->email }}</p>
+                                <p class="mb-1">{{ $user->phone }}</p>
 
-                            @if(session('address'))
-                                <div id="shippingAddressSection">
-                                    <hr>
-                                    <div class="d-flex justify-content-between align-items-start position-relative">
-                                        <strong class="fw-bold">Dirección de envío</strong>
+                                @if(session('address'))
+                                    <div id="shippingAddressSection">
+                                        <hr>
+                                        <div class="d-flex justify-content-between align-items-start position-relative">
+                                            <strong class="fw-bold">Dirección de envío</strong>
 
-                                        <!-- <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
-                                            @csrf
-                                            <button type="submit" class="btn-close" aria-label="Eliminar dirección"></button>
-                                        </form> -->
+                                            <!-- <form action="{{ route('cart.clearAddress') }}" method="POST" class="position-absolute top-0 end-0 m-2">
+                                                @csrf
+                                                <button type="submit" class="btn-close" aria-label="Eliminar dirección"></button>
+                                            </form> -->
+                                        </div>
+                                        @if($address)
+                                            <p class="mb-1">{{ $address['destinatario'] }}</p>
+                                            <p class="mb-1">{{ $address['linea_1'] }}{{ $address['linea_2'] ? ', '.$address['linea_2'] : '' }}</p>
+                                            <p class="mb-1">{{ $address['codigo_postal'] }} {{ $address['ciudad'] }}, {{ $address['provincia'] }}</p>
+                                            <p class="mb-1">{{ $address['pais'] }}</p>
+                                        @endif
                                     </div>
-                                    @if($address)
-                                        <p class="mb-1">{{ $address['destinatario'] }}</p>
-                                        <p class="mb-1">{{ $address['linea_1'] }}{{ $address['linea_2'] ? ', '.$address['linea_2'] : '' }}</p>
-                                        <p class="mb-1">{{ $address['codigo_postal'] }} {{ $address['ciudad'] }}, {{ $address['provincia'] }}</p>
-                                        <p class="mb-1">{{ $address['pais'] }}</p>
-                                    @endif
-                                </div>
-                            @endif
-                        </div>
+                                @endif
+                            </div>
 
-                        <div class="form-check mt-4">
-                            <input class="form-check-input" type="checkbox" id="toggleAddress" name="send_home"
-                                {{ session('success') ? 'checked' : '' }}
+                            <div class="form-check mt-4">
+                                <input id="toggleAddress" name="send_home" class="form-check-input" type="checkbox"
+                                    {{ session('success') ? 'checked' : '' }}
+                                >
+                                <strong class="form-check-label" for="toggleAddress">
+                                    ¿Quieres que te enviemos el pedido a casa?
+                                </strong>
+                                <small>Indícanos tu dirección y nos pondremos en contacto contigo</small>
+                            </div>
+
+                            <!-- Botón para editar dirección -->
+                            <button
+                                id="editAddressBtn"
+                                type="button"
+                                class="btn w-100 btn-primary fw-bold mt-2 {{ !session('success') ? 'd-none' : '' }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#addressModal"
                             >
-                            <strong class="form-check-label" for="toggleAddress">
-                                ¿Quieres que te enviemos el pedido a casa?
-                            </strong>
-                            <small>Indícanos tu dirección y nos pondremos en contacto contigo</small>
-                        </div>
+                                Editar dirección
+                            </button>
 
-                        <!-- Botón para editar dirección -->
-                        <button
-                            id="editAddressBtn"
-                            type="button"
-                            class="btn w-100 btn-primary fw-bold mt-2 {{ !session('success') ? 'd-none' : '' }}"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addressModal"
-                        >
-                            Editar dirección
-                        </button>
-
-                        <button id="submitBtn" type="submit" class="btn btn-warning w-100 mt-4 fw-bold">
-                            Finalizar pedido
-                        </button>
+                            <button id="submitBtn" type="submit" class="btn btn-warning w-100 mt-4 fw-bold">
+                                Finalizar pedido
+                            </button>
+                        </form>
 
                     @else
                         <!-- Botón que lanza el modal de login -->
@@ -170,7 +173,8 @@
                             <div class="modal-header">
                                 <h5 class="modal-title">Seleccionar dirección</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
+                            </div>ç
+
                             <div class="modal-body">
                                 <!-- Direcciones guardadas -->
                                 <div class="accordion" id="savedAddressAccordion">
@@ -182,7 +186,7 @@
                                                 data-bs-target="#collapseSavedAddress" 
                                                 aria-expanded="true" 
                                                 aria-controls="collapseSavedAddress">
-                                                Datos almacenados
+                                                Direcciones guardadas
                                             </button>
                                         </h2>
                                         <div id="collapseSavedAddress" class="accordion-collapse collapse show" aria-labelledby="collapseSavedAddress" data-bs-parent="#savedAddressAccordion">
@@ -191,7 +195,7 @@
                                                     @csrf
                                                     <div class="list-group">
                                                         @foreach ($addresses as $saved_address)
-                                                            <label class="list-group-item d-flex align-items-start">
+                                                            <label class="list-group-item d-flex align-items-center">
                                                                 <input class="form-check-input me-2" 
                                                                     type="radio"
                                                                     name="selected_address" 
@@ -199,7 +203,7 @@
                                                                     {{ session('address.id') == $saved_address->id ? 'checked' : '' }}
                                                                 >
                                                                 <div>
-                                                                    <strong>{{ $saved_address->nombre }}</strong><br>
+                                                                    <strong>{{ $saved_address->destinatario }}</strong><br>
                                                                     {{ $saved_address->linea_1 }} {{ $saved_address->linea_2 }}<br>
                                                                     {{ $saved_address->ciudad }}, {{ $saved_address->provincia }} ({{ $saved_address->codigo_postal }})<br>
                                                                     {{ $saved_address->pais }}
@@ -224,7 +228,7 @@
                                                 data-bs-target="#collapseNewAddress" 
                                                 aria-expanded="false" 
                                                 aria-controls="collapseNewAddress">
-                                                Añadir nuevos datos de contacto
+                                                Añadir nueva dirección
                                             </button>
                                         </h2>
                                         <div id="collapseNewAddress" class="accordion-collapse collapse {{ !auth()->check() ? 'show' : '' }}" aria-labelledby="collapseNewAddress" data-bs-parent="#newAddressAccordion">

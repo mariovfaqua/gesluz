@@ -52,4 +52,12 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    /**
+     * Relacción uno a muchos con addresses
+     */
+    public function addresses()
+    {
+        return $this->hasMany(Address::class, 'id_user');
+    }
 }
