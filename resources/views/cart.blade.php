@@ -78,12 +78,16 @@
         </div>
 
         <!-- Sección derecha: Resumen del pedido -->
+        @php
+            $precio_total= number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2);
+        @endphp
+
         <div class="col-md-5">
             <div class="p-4 bg-light rounded shadow">
                 <h4 class="mb-4"><strong>Resumen del pedido</strong></h4>
                 <div class="d-flex justify-content-between">
                     <span>Productos:</span>
-                    <span>{{ number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2) }} €</span>
+                    <span>{{ $precio_total }} €</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span>Gastos de envío (IVA inc.)</span>
@@ -103,7 +107,7 @@
                         @endphp
 
                         <form action="{{ route('orders.store') }}" method="POST">
-                        @csrf
+                            @csrf
                             <div class="p-3 mt-3 border rounded bg-light">
                                 <strong class="fw-bold">Datos de contacto</strong>
                                 <p class="mb-1">{{ $user->name }}</p>
@@ -151,6 +155,8 @@
                             >
                                 Editar dirección
                             </button>
+
+                            <input id="precio_total" name="precio_total" type="hidden" value="{{ $precio_total }}">
 
                             <button id="submitBtn" type="submit" class="btn btn-warning w-100 mt-4 fw-bold">
                                 Finalizar pedido

@@ -127,7 +127,8 @@ class OrderController extends Controller
         }
 
         // Recuperar el pedido por ID junto con la dirección
-        $order = Order::with('address')->findOrFail($id);
+        $order = Order::findOrFail($id);
+        $address = $order->address;
 
         // Recuperar los id_item y cantidades de la tabla order_items
         $cantidades = DB::table('order_items')
@@ -142,7 +143,7 @@ class OrderController extends Controller
             $item->cantidad = $cantidades[$item->id]; // Asignar la cantidad recuperada
         }
 
-        return view('orders.detail')->with(['order'=>$order, 'items'=>$items]);
+        return view('orders.detail')->with(['order'=>$order, 'address'=>$address, 'items'=>$items]);
     }
 
     /**

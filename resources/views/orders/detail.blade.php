@@ -18,13 +18,29 @@
             </div>
             <a href="{{ url()->previous() }}" class="btn btn-info btn-sm w-25">Volver</a>
         </div>
-        <div class="col-md-5 p-3 border rounded">
-            <strong class="fw-bold">Dirección de envío</strong>
-            <p class="mb-1">{{ $order->address->nombre }}</p>
-            <p class="mb-1"> {{ $order->address->linea_1 }}{{ $order->address['linea_2'] ? ', ' . $order->address['linea_2'] : '' }}</p>
-            <p class="mb-1"> {{ $order->address['ciudad'] }}, {{ $order->address['provincia'] }} {{ $order->address['pais'] }} {{ $order->address['codigo_postal'] }}</p>
 
-        </div>
+        @if($address)
+            <div class="col-md-5 p-3 border rounded">
+                <!-- <strong class="fw-bold">Datos de contacto</strong>
+                <p class="mb-1"> $user->name </p>
+                <p class="mb-1"> $user->email </p>
+                <p class="mb-1"> $user->phone </p>
+
+                
+                    <div id="shippingAddressSection">
+                        <hr> -->
+                        <div class="d-flex justify-content-between align-items-start position-relative">
+                            <strong class="fw-bold">Dirección de envío</strong>
+                        </div>
+                        @if($address)
+                            <p class="mb-1">{{ $address['destinatario'] }}</p>
+                            <p class="mb-1">{{ $address['linea_1'] }}{{ $address['linea_2'] ? ', '.$address['linea_2'] : '' }}</p>
+                            <p class="mb-1">{{ $address['codigo_postal'] }} {{ $address['ciudad'] }}, {{ $address['provincia'] }}</p>
+                            <p class="mb-1">{{ $address['pais'] }}</p>
+                        @endif
+                    <!-- </div> -->
+            </div>
+        @endif
     </div>
 
     <h5>Artículos en el pedido</h5>
