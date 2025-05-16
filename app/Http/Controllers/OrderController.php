@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderMail;
 
 class OrderController extends Controller
 {
@@ -106,6 +108,9 @@ class OrderController extends Controller
             // Vaciar la sesión después de procesar el pedido
             session()->forget('cart');
             session()->forget('address');
+
+            // Enviar correo de confirmación
+            Mail::to($user->email)->send(new OrderMail($order, $user));
 
             DB::commit(); // Confirmar la transacción
             return redirect()->route('home')->with('success', 'Pedido actualizado correctamente.');

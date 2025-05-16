@@ -6,6 +6,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\MailController;
 
 Auth::routes(); 
 
@@ -36,3 +37,6 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('car
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/store-address', [CartController::class, 'storeAddress'])->name('cart.storeAddress');
 Route::match(['get', 'post'], '/cart/clear-address', [CartController::class, 'clearAddress'])->name('cart.clearAddress');
+
+// ----- Mail
+// Route::get('send-mail', [MailController::class, 'index']);
