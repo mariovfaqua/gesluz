@@ -79,7 +79,7 @@
 
         <!-- Sección derecha: Resumen del pedido -->
         @php
-            $precio_total= number_format($items->sum(fn($item) => $item->cantidad * $item->precio), 2);
+            $precio_total = $precio_total = round($items->sum(fn($item) => $item->cantidad * $item->precio), 2);
         @endphp
 
         <div class="col-md-5">
@@ -87,7 +87,7 @@
                 <h4 class="mb-4"><strong>Resumen del pedido</strong></h4>
                 <div class="d-flex justify-content-between">
                     <span>Productos:</span>
-                    <span>{{ $precio_total }} €</span>
+                    <span>{{ number_format($precio_total, 2) }} €</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span>Gastos de envío (IVA inc.)</span>

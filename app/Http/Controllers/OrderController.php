@@ -49,77 +49,77 @@ class OrderController extends Controller
     /**
      * Guardar un nuevo pedido en la base de datos.
      */
-    public function store(Request $request)
-    {
-        // Si el usuario no está autenticado, redirigir con un mensaje de error
-        if (!auth()->check()) {
-            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
-        }
+    // public function store(Request $request)
+    // {
+    //     // Si el usuario no está autenticado, redirigir con un mensaje de error
+    //     if (!auth()->check()) {
+    //         return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+    //     }
 
-        // Obtener el usuario, carrito y la dirección desde la sesión
-        $user = auth()->user();
-        $cart = session()->get('cart', []);
-        $addressData = session()->get('address', []);
+    //     // Obtener el usuario, carrito y la dirección desde la sesión
+    //     $user = auth()->user();
+    //     $cart = session()->get('cart', []);
+    //     $addressData = session()->get('address', []);
 
-        // Verificar si existen los datos necesarios
-        if (($request->has('send_home') && !$addressData) || !$cart) {
-            return back()->with('error', 'No se ha podido completar la operación.');
-        }
+    //     // Verificar si existen los datos necesarios
+    //     if (($request->has('send_home') && !$addressData) || !$cart) {
+    //         return back()->with('error', 'No se ha podido completar la operación.');
+    //     }
 
-        DB::beginTransaction(); // Iniciar transacción
-        try{
-            // Crear un nuevo pedido (order)
-            $order = new Order();
-            $order->id_user = $user->id; 
-            $order->fecha = now();
-            // Convertir el precio total al formato numérico correcto
-            $order->precio_total = floatval(str_replace(',', '', $request->precio_total));
+    //     DB::beginTransaction(); // Iniciar transacción
+    //     try{
+    //         // Crear un nuevo pedido (order)
+    //         $order = new Order();
+    //         $order->id_user = $user->id; 
+    //         $order->fecha = now();
+    //         // Convertir el precio total al formato numérico correcto
+    //         $order->precio_total = floatval(str_replace(',', '', $request->precio_total));
 
-            // Añadir la dirección
-            if ($request->has('send_home')) {
-                // Determinar si la dirección ya existe o se creará una nueva
-                if (isset($addressData['id']) && $user->addresses()->where('id', $addressData['id'])->exists()) {
-                    // La dirección ya existe y es del usuario
-                    $address = Address::find($addressData['id']);
-                } else {
-                    // Es una dirección nueva
-                    $address = $user->addresses()->create($addressData);
-                }
+    //         // Añadir la dirección
+    //         if ($request->has('send_home')) {
+    //             // Determinar si la dirección ya existe o se creará una nueva
+    //             if (isset($addressData['id']) && $user->addresses()->where('id', $addressData['id'])->exists()) {
+    //                 // La dirección ya existe y es del usuario
+    //                 $address = Address::find($addressData['id']);
+    //             } else {
+    //                 // Es una dirección nueva
+    //                 $address = $user->addresses()->create($addressData);
+    //             }
 
-                $order->id_address = $address->id; // Asignar la dirección obtenida o creada
-            }
+    //             $order->id_address = $address->id; // Asignar la dirección obtenida o creada
+    //         }
 
-            $order->save();
+    //         $order->save();
 
-            // Actualizar la tabla order_items
-            $orderItems = [];
-            foreach ($cart as $cartItem) {
-                $item = $cartItem['item'];
-                if ($item instanceof \App\Models\Item) { // Verificar que realmente es una instancia de Item
+    //         // Actualizar la tabla order_items
+    //         $orderItems = [];
+    //         foreach ($cart as $cartItem) {
+    //             $item = $cartItem['item'];
+    //             if ($item instanceof \App\Models\Item) { // Verificar que realmente es una instancia de Item
 
-                    // Añadir al array de sincronización
-                    $orderItems[$item->id] = ['cantidad' => $cartItem['cantidad']];
-                }
-            }
+    //                 // Añadir al array de sincronización
+    //                 $orderItems[$item->id] = ['cantidad' => $cartItem['cantidad']];
+    //             }
+    //         }
 
-            // Sincronizar la tabla order_items
-            $order->items()->sync($orderItems);
+    //         // Sincronizar la tabla order_items
+    //         $order->items()->sync($orderItems);
 
-            // Vaciar la sesión después de procesar el pedido
-            session()->forget('cart');
-            session()->forget('address');
+    //         // Vaciar la sesión después de procesar el pedido
+    //         session()->forget('cart');
+    //         session()->forget('address');
 
-            // Enviar correo de confirmación
-            Mail::to($user->email)->send(new OrderMail($order, $user));
+    //         // Enviar correo de confirmación
+    //         Mail::to($user->email)->send(new OrderMail($order, $user));
 
-            DB::commit(); // Confirmar la transacción
-            return redirect()->route('home')->with('success', 'Pedido actualizado correctamente.');
+    //         DB::commit(); // Confirmar la transacción
+    //         return redirect()->route('home')->with('success', 'Pedido actualizado correctamente.');
 
-        } catch (\Exception $e) {
-            DB::rollBack(); // Revertir la transacción en caso de error
-            return back()->with('error', 'Error al procesar el pedido: ' . $e->getMessage());
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         DB::rollBack(); // Revertir la transacción en caso de error
+    //         return back()->with('error', 'Error al procesar el pedido: ' . $e->getMessage());
+    //     }
+    // }
 
     /**
      * Mostrar el detalle de un pedido.
