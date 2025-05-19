@@ -105,8 +105,8 @@
                             $user = Auth::user();
                             $address = session('address');
                         @endphp
-
-                        <form action="{{ route('orders.store') }}" method="POST">
+                        <form action="{{ route('checkout') }}" method="GET">
+                        <!-- <form action="{{ route('orders.store') }}" method="POST"> -->
                             @csrf
                             <div class="p-3 mt-3 border rounded bg-light">
                                 <strong class="fw-bold">Datos de contacto</strong>

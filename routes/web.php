@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\PaymentController;
 
 Auth::routes(); 
 
@@ -37,6 +38,11 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('car
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/store-address', [CartController::class, 'storeAddress'])->name('cart.storeAddress');
 Route::match(['get', 'post'], '/cart/clear-address', [CartController::class, 'clearAddress'])->name('cart.clearAddress');
+
+// ----- Pago
+Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
+Route::get('/checkout/success', [PaymentController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/cancel', [PaymentController::class, 'cancel'])->name('checkout.cancel');
 
 // ----- Mail
 // Route::get('send-mail', [MailController::class, 'index']);
