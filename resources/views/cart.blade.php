@@ -79,7 +79,7 @@
 
         <!-- Sección derecha: Resumen del pedido -->
         @php
-            $precio_total = $precio_total = round($items->sum(fn($item) => $item->cantidad * $item->precio), 2);
+            $precio_total = round($items->sum(fn($item) => $item->cantidad * $item->precio), 2);
         @endphp
 
         <div class="col-md-5">
@@ -105,7 +105,7 @@
                             $user = Auth::user();
                             $address = session('address');
                         @endphp
-                        <form action="{{ route('checkout') }}" method="GET">
+                        <form id="orderForm" action="{{ route('checkout') }}" method="GET">
                         <!-- <form action="{{ route('orders.store') }}" method="POST"> -->
                             @csrf
                             <div class="p-3 mt-3 border rounded bg-light">
@@ -158,11 +158,37 @@
 
                             <input id="precio_total" name="precio_total" type="hidden" value="{{ $precio_total }}">
 
-                            <button id="submitBtn" type="submit" class="btn btn-warning w-100 mt-4 fw-bold">
+                            <button 
+                                id="submitBtn"
+                                type="button"
+                                class="btn btn-warning w-100 mt-4 fw-bold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#confirmationModal"
+                            >
                                 Finalizar pedido
                             </button>
-                        </form>
 
+                            <!-- Modal para confirmar pedido sin dirección -->
+                            <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModal" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmar pedido</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>ç
+
+                                        <div class="modal-body">
+                                            Los pedidos sin dirección de envío deberán ser recogidos en la tienda. ¿Deseas continuar?
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-warning">Continuar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     @else
                         <!-- Botón que lanza el modal de login -->
                         <button class="btn btn-primary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#loginModal">
@@ -343,6 +369,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const orderForm = document.getElementById('orderForm');
         const toggleAddress = document.getElementById('toggleAddress');
         const addressSection = document.getElementById('shippingAddressSection');
         const editAddressBtn = document.getElementById('editAddressBtn');
@@ -350,6 +377,26 @@
 
         const addressIsEmpty = {{ empty(session('address')) ? 'true' : 'false' }};
         const isUserLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+
+        function updateSubmitButtonBehavior() {
+            if (toggleAddress.checked) {
+                // Para pedidos con dirección
+                orderForm.setAttribute('action', "{{ route('orders.store') }}");
+                orderForm.setAttribute('method', 'POST');
+
+                submitBtn.setAttribute('type', 'submit');
+                submitBtn.removeAttribute('data-bs-toggle');
+                submitBtn.removeAttribute('data-bs-target');
+            } else {
+                // Para pedidos sin dirección (recogida en tienda)
+                orderForm.setAttribute('action', "{{ route('checkout') }}");
+                orderForm.setAttribute('method', 'GET');
+
+                submitBtn.setAttribute('type', 'button');
+                submitBtn.setAttribute('data-bs-toggle', 'modal');
+                submitBtn.setAttribute('data-bs-target', '#confirmationModal');
+            }
+        }
 
         function handleAddressToggle(triggeredByUser = false) {
             if (toggleAddress.checked) {
@@ -372,10 +419,9 @@
                 submitBtn.classList.remove('btn-secondary');
                 submitBtn.classList.add('btn-warning');
                 addressSection.classList.add('d-none');
-                // if (triggeredByUser) {
-                //     window.location.href = "{{ route('cart.clearAddress') }}";
-                // }
             }
+
+            updateSubmitButtonBehavior();
         }
 
         if (toggleAddress) {
@@ -384,4 +430,3 @@
         }
     });
 </script>
-
