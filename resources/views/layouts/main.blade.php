@@ -322,4 +322,14 @@
     <!-- Scripts adicionales -->
     @stack('scripts')
 </body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        @if ($errors->has('email') || $errors->has('password'))
+            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        @endif
+    });
+</script>
+
 </html>

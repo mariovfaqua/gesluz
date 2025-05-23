@@ -33,6 +33,17 @@
                         @enderror
                     </div>
 
+                    <!-- Teléfono -->
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required autocomplete="tel">
+                        @error('phone')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
                     <!-- Contraseña -->
                     <div class="mb-3">
                         <label for="password" class="form-label">Contraseña</label>
