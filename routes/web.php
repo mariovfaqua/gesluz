@@ -3,13 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PaymentController;
 
-Auth::routes(); 
+// ----- Autenticación
+Auth::routes();
+Route::middleware(['auth'])->get('/account/edit', [AccountController::class, 'edit'])->name('account.edit');
+Route::middleware(['auth'])->put('/account/update', [AccountController::class, 'update'])->name('account.update');
 
 // ----- Inicio
 Route::get('/', [MainController::class, 'index'])->name('inicio');

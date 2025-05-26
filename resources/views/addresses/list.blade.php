@@ -14,7 +14,7 @@
     <div class="card mb-4 shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Datos de la cuenta</h5>
-            <a href="#" class="btn btn-outline-primary btn-sm">Editar</a>
+            <a href="{{ route('account.edit') }}" class="btn btn-outline-primary btn-sm">Editar</a>
         </div>
         <div class="card-body">
             <p class="mb-1"><strong>Nombre:</strong> {{ Auth::user()->name }}</p>
