@@ -25,6 +25,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/items/clear', [ItemController::class, 'clearFilters'])->name('items.clearFilters');
 Route::get('/items/link/{type}/{value}', [ItemController::class, 'quickLink'])->name('items.quickLink');
 Route::get('/items/adminList', [ItemController::class, 'getAdminList'])->name('items.adminList');
+Route::patch('/items/{item}/disponibilidad', [ItemController::class, 'toggleDisponibilidad']);
 Route::resource('items', ItemController::class);
 
 // ----- Orders

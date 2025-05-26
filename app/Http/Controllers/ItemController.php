@@ -272,6 +272,24 @@ class ItemController extends Controller
      * --- Otras funciones ---
      */
 
+     public function toggleDisponibilidad(Request $request, Item $item)
+     {
+         \Log::info('Petición recibida', $request->all());
+         
+         $request->validate([
+             'disponibilidad' => 'required|boolean'
+         ]);
+     
+         \Log::info('Antes de guardar:', ['valor' => $request->disponibilidad]);
+     
+         $item->disponibilidad = $request->disponibilidad;
+         $item->save();
+     
+         \Log::info('Después de guardar:', ['item' => $item]);
+     
+         return response()->json(['success' => true]);
+     }
+     
     public function filterByForm($query, $form)
     {
         $appliedFilters = [];

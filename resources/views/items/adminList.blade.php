@@ -30,9 +30,10 @@
                         <th style="width=5%">#</th>
                         <th style="width=15%">Imagen</th>
                         <th style="width=5%">Nombre</th>
-                        <th style="width=35%">Descripción</th>
+                        <th style="width=15%">Descripción</th>
                         <th style="width=15%">Precio</th>
-                        <th style="width=25%">Acciones</th>
+                        <th style="width=15%">Disponible</th>
+                        <th style="width=30%">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="itemsTable">
@@ -47,12 +48,22 @@
                             <td>{{ $item->nombre }}</td>
                             <td>{{ Str::limit($item->descripcion, 50, '...') }}</td>
                             <td>{{ number_format($item->precio, 2) }} €</td>
+                            <td class="text-center">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input disponibilidad-switch"
+                                        type="checkbox"
+                                        data-id="{{ $item->id }}"
+                                        {{ $item->disponibilidad ? 'checked' : '' }}>
+                                </div>
+                            </td>
                             <td>
-                                <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning btn-sm">Editar</a>
+                                <a href="{{ route('items.edit', $item->id) }}" class="material-symbols-outlined text-decoration-none">edit_note</a>
                                 <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-inline">
                                     @method('DELETE')
                                     @csrf
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este ítem?')">Eliminar</button>
+                                    <span type="submit" class="material-symbols-outlined text-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este item?');">
+                                        delete
+                                    </span>
                                 </form>
                             </td>
                         </tr>

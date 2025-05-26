@@ -21,6 +21,7 @@ return new class extends Migration
             $table->float('alto', 6, 2)->unsigned();
             $table->float('ancho', 3, 2)->unsigned();
             $table->integer('stock')->unsigned();
+            $table->boolean('disponibilidad')->default(false)->unsigned();
             $table->foreignId('id_brand')->nullable()->constrained('brands')->onDelete('cascade');
             $table->timestamps();
         });

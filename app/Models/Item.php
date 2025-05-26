@@ -18,6 +18,7 @@ class Item extends Model
         'alto',
         'ancho',
         'stock',
+        'disponibilidad',
         'id_brand',
     ];
 

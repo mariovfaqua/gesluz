@@ -29,6 +29,7 @@ class ItemFactory extends Factory
             'alto' => $this->faker->randomFloat(2, 10, 1000),  // Un número decimal con 2 decimales entre 10 y 1000
             'ancho' => $this->faker->randomFloat(2, 10, 1000),  // Un número decimal con 2 decimales entre 10 y 1000
             'stock' => $this->faker->numberBetween(0, 100),  // Un número entero entre 0 y 100
+            'disponibilidad' => $this->faker->boolean(), // Boolean
             'id_brand' => $brand ? $brand->id : null, // Comprobar que id_brand sea válido o nulo si no hay marcas
         ];
     }
