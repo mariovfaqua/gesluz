@@ -9,6 +9,10 @@ use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
+    public function show()
+    {
+        return view('auth.login');
+    }
 
     public function edit()
     {

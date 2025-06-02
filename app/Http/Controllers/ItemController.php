@@ -104,7 +104,7 @@ class ItemController extends Controller
         // Obtener la cantidad total reservada en pedidos pendientes
         $cantidadReservada = Order_Item::where('id_item', $id)
         ->whereHas('order', function ($query) {
-            $query->where('estatus', false); // Filtrar solo los pedidos pendientes
+            $query->where('estatus', '!=', 'completado'); // Filtrar solo los pedidos pendientes
         })
         ->sum('cantidad'); // Sumar la cantidad reservada en esos pedidos
 

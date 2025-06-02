@@ -25,12 +25,12 @@ class OrderController extends Controller
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
-        $pendientes = Order::where('estatus', 0)
+        $pendientes = Order::where('estatus', '!=', 'completado')
         ->where('id_user', auth()->id())
         ->orderBy('fecha', 'desc')
         ->get();
 
-        $completados = Order::where('estatus', 1)
+        $completados = Order::where('estatus', 'completado')
         ->where('id_user', auth()->id())
         ->orderBy('fecha', 'desc')
         ->paginate(20);
@@ -47,7 +47,8 @@ class OrderController extends Controller
     }
 
     /**
-     * Guardar un nuevo pedido en la base de datos.
+     * Guardar un nuevo pedido para envío en la base de datos
+     * (Los pedidos sin dirección pasan directamente al PaymentController)
      */
     public function store(Request $request)
     {
@@ -74,19 +75,20 @@ class OrderController extends Controller
             $order->fecha = now();
             $order->precio_total = $request['precio_total'];
 
-            // Añadir la dirección
-            if ($request->has('send_home')) {
-                // Determinar si la dirección ya existe o se creará una nueva
-                if (isset($addressData['id']) && $user->addresses()->where('id', $addressData['id'])->exists()) {
-                    // La dirección ya existe y es del usuario
-                    $address = Address::find($addressData['id']);
-                } else {
-                    // Es una dirección nueva
-                    $address = $user->addresses()->create($addressData);
-                }
-
-                $order->id_address = $address->id; // Asignar la dirección obtenida o creada
+            // Determinar si la dirección ya existe o se creará una nueva
+            if (isset($addressData['id']) && $user->addresses()->where('id', $addressData['id'])->exists()) {
+                // La dirección ya existe y es del usuario
+                $address = Address::find($addressData['id']);
+            } else {
+                // Es una dirección nueva
+                $address = $user->addresses()->create($addressData);
             }
+
+            // Asignar la dirección obtenida o creada
+            $order->id_address = $address->id;
+
+            // Cambiar el estado del pedido
+            $order->estatus = 'pendiente_email';
 
             $order->save();
 
@@ -159,47 +161,80 @@ class OrderController extends Controller
     }
 
     /**
-     * Marcar un pedido como 'completado' y actualizar stock de los items.
+     * Cambiar el estado del pedido
      */
     public function update(Order $order)
     {
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
-            return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
+        // Verificar autenticación
+        if (!auth()->check()) {
+            return redirect()->route('auth.show');
         }
-    
+
+        $user = auth()->user();
+        $estatusAnterior = $order->estatus;
+        $nuevoEstatus = null;
+
+        switch ($estatusAnterior) {
+            case 'pendiente_email':
+                if ($user->role === 'admin') {
+                    $nuevoEstatus = 'pendiente_confirmacion';
+                }
+                break;
+
+            case 'pendiente_confirmacion':
+                if ($user->role === 'admin' || $order->id_user === $user->id) {
+                    $nuevoEstatus = 'pendiente_envio';
+                }
+                break;
+
+                case 'pendiente_envio':
+                    if ($user->role === 'admin') {
+                        $nuevoEstatus = 'completado';
+                    }
+                    break;
+                
+                case 'pendiente_recogida':
+                    if ($user->role === 'admin') {
+                        $nuevoEstatus = 'completado';
+                    }
+                    break;                
+        }
+        // Si no se pudo determinar un nuevo estado válido
+        if (!$nuevoEstatus) {
+            return redirect()->back()->with('error', 'No tienes permiso para realizar esta acción o el estado no es válido.');
+        }
+
         try {
-            // Establecer el estatus del pedido como completado
-            $order->estatus = true;
+            $order->estatus = $nuevoEstatus;
             $order->save();
 
-            // Recuperar items del pedido
-            $orderItems = Order_Item::where('id_order', $order->id)->get();
+            // Solo si el nuevo estado es 'completado', se actualiza el stock
+            if ($nuevoEstatus === 'completado') {
+                $orderItems = Order_Item::where('id_order', $order->id)->get();
 
-            // Recorrer los order_items y actualizar el stock de los items relacionados
-            foreach ($orderItems as $orderItem) {
-                $item = Item::find($orderItem->id_item);
-
-                if ($item) {
-                    // Restar la cantidad del stock
-                    $item->stock -= $orderItem->cantidad;
-                    $item->save();
+                foreach ($orderItems as $orderItem) {
+                    $item = Item::find($orderItem->id_item);
+                    if ($item) {
+                        $item->stock -= $orderItem->cantidad;
+                        $item->save();
+                    }
                 }
             }
-    
+
             return redirect()->back()->with('success', 'Pedido actualizado correctamente.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Hubo un problema al actualizar el pedido.');
         }
-    }    
+    }
 
     /**
      * Eliminar el pedido de la base de datos.
      */
     public function destroy(Order $order)
     {
-        // Si el usuario no es admin, redirigir con un mensaje de error
-        if (!auth()->check() || auth()->user()->role !== 'admin') {
-            return redirect()->route('home')->with('error', 'No tienes permiso para realizar esta acción.');
+        // Verificar si el usuario es admin o si el pedido le pertenece
+        if (!auth()->check() || (auth()->user()->role !== 'admin' && $order->id_user !== auth()->id())) {
+            return redirect()->back()->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
         try {
@@ -210,11 +245,11 @@ class OrderController extends Controller
             $order->delete();
 
             // Recuperar listado de pedidos antes de redirigir
-            $pendientes = Order::where('estatus', 0)
+            $pendientes = Order::where('estatus', '!=', 'completadp')
             ->orderBy('fecha', 'desc')
             ->get();
 
-            $completados = Order::where('estatus', 1)
+            $completados = Order::where('estatus', 'completadp')
                 ->orderBy('fecha', 'desc')
                 ->paginate(20);
 
@@ -237,15 +272,35 @@ class OrderController extends Controller
             return redirect()->route('home')->with('error', 'No tienes permiso para acceder a esta página.');
         }
 
-        $pendientes = Order::where('estatus', 0)
+        $pendientes_email = Order::where('estatus', 'pendiente_email')
             ->orderBy('fecha', 'desc')
             ->get();
 
-        $completados = Order::where('estatus', 1)
+        $pendientes_confirmacion = Order::where('estatus', 'pendiente_confirmacion')
+            ->orderBy('fecha', 'desc')
+            ->get();
+
+        $pendientes_envio = Order::where('estatus', 'pendiente_envio')
+            ->orderBy('fecha', 'desc')
+            ->get();
+
+        $pendientes_recogida = Order::where('estatus', 'pendiente_recogida')
+            ->orderBy('fecha', 'desc')
+            ->get();
+
+        $completados = Order::where('estatus', 'completado')
             ->orderBy('fecha', 'desc')
             ->paginate(20);
 
-        return view('orders.list')->with(['pendientes'=>$pendientes, 'completados'=>$completados]);
+        return view('orders.adminList')
+        ->with([
+            'pendientes_email' => $pendientes_email, 
+            'pendientes_confirmacion' => $pendientes_confirmacion,
+            'pendientes_envio' => $pendientes_envio,
+            'pendientes_recogida' => $pendientes_recogida,
+            'completados' => $completados
+        ]);
+        
     }
 
 }

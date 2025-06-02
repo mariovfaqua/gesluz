@@ -65,37 +65,35 @@ class PaymentController extends Controller
             if (!$data) {
                 return redirect()->route('cart')->with('error', 'No se encontró información del pago.');
             }
-    
-            $cart = $data['cart'];
-            $addressData = $data['address'];
-    
-            $order = new Order();
-            $order->id_user = $user->id;
-            $order->fecha = now();
-            $order->precio_total = $data['precio_total'];
-    
+            
             if ($data['send_home']) {
-                if (isset($addressData['id']) && $user->addresses()->where('id', $addressData['id'])->exists()) {
-                    $address = Address::find($addressData['id']);
-                } else {
-                    $address = $user->addresses()->create($addressData);
-                }
-    
+                // Hay que recuperar el id del pedido desde un enlace o algo
+                // Sumar el precio del envío arriba
                 $order->id_address = $address->id;
-            }
+                $order->estatus = 'pendiente_envio';
+            } else{
+                $cart = $data['cart'];
+                $addressData = $data['address'];
+                $order = new Order();
+
+                $order->id_user = $user->id;
+                $order->fecha = now();
+                $order->precio_total = $data['precio_total'];
+                $order->estatus = 'pendiente_recogida';
+
+                $order->save();
     
-            $order->save();
-    
-            $orderItems = [];
-            foreach ($cart as $item) {
-                if ($item['item'] instanceof \App\Models\Item) {
-                    $orderItems[$item['item']->id] = ['cantidad' => $item['cantidad']];
+                $orderItems = [];
+                foreach ($cart as $item) {
+                    if ($item['item'] instanceof \App\Models\Item) {
+                        $orderItems[$item['item']->id] = ['cantidad' => $item['cantidad']];
+                    }
                 }
+
+                $order->items()->sync($orderItems);
+
+                Mail::to($user->email)->send(new OrderMail($order, $user));
             }
-    
-            $order->items()->sync($orderItems);
-    
-            Mail::to($user->email)->send(new OrderMail($order, $user));
     
             // Limpiar sesión
             session()->forget(['cart', 'address', 'checkout_pending']);

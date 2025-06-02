@@ -8,6 +8,7 @@
     <h1>Hola {{ $user->name }},</h1>
 
     <p>Gracias por tu pedido. Lo hemos recibido correctamente y estamos procesándolo.</p>
+    <p>Pronto recibirás un correo con más información.</p>
 
     <h3>Resumen del pedido:</h3>
     <ul>
@@ -16,7 +17,7 @@
         <li>Total: €{{ number_format($order->precio_total, 2) }}</li>
     </ul>
 
-    <p>Nos pondremos en contacto contigo si necesitamos más información.</p>
+    <p>Nos pondremos en contacto contigo si necesitamos alguna cosa más.</p>
 
     <p>Gracias por confiar en nosotros.</p>
 </body>

@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             ['nombre' => 'clásico'],
         ]);        
 
-        Address::factory(100)->create();
+        Address::factory(5)->create();
         Brand::factory(50)->create();
         Item::factory(100)->create();
         Order::factory(100)->create();
